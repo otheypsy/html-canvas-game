@@ -1,0 +1,31 @@
+{
+
+    "tileheight": 17,
+    "tilewidth": 12,
+    "tilesets": [
+        {
+            "firstgid": 1,
+            "folderName": "player",
+            "fileName": "down"
+        },
+        {
+            "firstgid": 5,
+            "folderName": "player",
+            "fileName": "left"
+        },
+        {
+            "firstgid": 9,
+            "folderName": "player",
+            "fileName": "right"
+        },
+        {
+            "firstgid": 13,
+            "folderName": "player",
+            "fileName": "up"
+        }
+    ],
+    "start": {
+        "x": 25,
+        "y": 20
+    }
+}

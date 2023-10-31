@@ -1,0 +1,20 @@
+{
+    "movement": [
+        {
+            "key": "w",
+            "control": "up"
+        },
+        {
+            "key": "a",
+            "control": "left"
+        },
+        {
+            "key": "s",
+            "control": "down"
+        },
+        {
+            "key": "d",
+            "control": "right"
+        }
+    ]
+}
