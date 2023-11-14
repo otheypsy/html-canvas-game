@@ -1,13 +1,19 @@
-import Player from './Player.class'
 import AggregateTileSet from '../tilesets/AggregateTileSet.class'
 import TileSetFactory from '../tilesets/TileSet.factory'
 
-import type { PixelPosition } from '../types/PixelPosition'
+import ActorAnimation from './ActorAnimation.class'
+import AnimatedSpriteActor from './AnimatedSpriteActor.class'
 
-interface CreatePlayer {
+interface CreateAnimatedSpriteActor {
     tilesets: object[]
     xPixUnit: number
     yPixUnit: number
+    sprites: {
+        up: number[]
+        left: number[]
+        down: number[]
+        right: number[]
+    }
 }
 
 const handleTileSets = async (tileSetAggregate: AggregateTileSet, tileSets: object[]): Promise<void> => {
@@ -21,17 +27,24 @@ const handleTileSets = async (tileSetAggregate: AggregateTileSet, tileSets: obje
     }
 }
 
-const create = async (player: CreatePlayer): Promise<Player> => {
+const create = async (actor: CreateAnimatedSpriteActor): Promise<AnimatedSpriteActor> => {
     const pixelConfig = {
-        xPixUnit: player.xPixUnit,
-        yPixUnit: player.yPixUnit,
+        xPixUnit: actor.xPixUnit,
+        yPixUnit: actor.yPixUnit,
     }
 
     const tileSetAggregate = new AggregateTileSet()
-    await handleTileSets(tileSetAggregate, player.tilesets)
-    return new Player({
+    await handleTileSets(tileSetAggregate, actor.tilesets)
+
+    const animation = new ActorAnimation({
+        sprites: actor.sprites,
+    })
+    animation.animationType = Object.keys(actor.sprites)[0]
+
+    return new AnimatedSpriteActor({
         tileSet: tileSetAggregate,
         pixelConfig,
+        animation,
     })
 }
 

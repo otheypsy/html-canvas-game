@@ -1,20 +1,20 @@
-import type Renderer from '../classes/Renderer.class'
+import type Renderer from '../graphics/Renderer.class'
+import MapMovable from './MapMovable.class'
 
-type Direction = 'up' | 'down' | 'left' | 'right'
-
-class Actor {
-    #defaultDirection: Direction
+class Actor extends MapMovable {
+    #type: string
 
     constructor() {
-        this.#defaultDirection = 'down'
+        super()
+        this.#type = 'abstract'
     }
 
-    set defaultDirection(direction: Direction) {
-        this.#defaultDirection = direction
+    set type(type: string) {
+        this.#type = type
     }
 
-    get defaultDirection(): Direction {
-        return this.#defaultDirection
+    get type(): string {
+        return this.#type
     }
 
     draw(renderer: Renderer): void {

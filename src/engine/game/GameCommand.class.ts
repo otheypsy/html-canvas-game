@@ -1,31 +1,27 @@
-import type GameBuilder from './Game.builder'
-
 class GameCommand {
-    protected game: GameBuilder
     #isRunning: boolean
     #oldTime: number
     #fpsInterval: number
 
-    constructor(game: GameBuilder) {
-        this.game = game
+    constructor(fps: number) {
         this.#isRunning = false
         this.#oldTime = 0
-        this.#fpsInterval = 1000 / this.game.config.fps
+        this.#fpsInterval = 1000 / fps
     }
 
     #loop = (newTime): void => {
-        if (!this.#isRunning) {
-            return undefined
-        }
+        if (!this.#isRunning) return undefined
         window.requestAnimationFrame(this.#loop)
 
         const elapsed = newTime - this.#oldTime
         if (elapsed <= this.#fpsInterval) return undefined
-        this.render()
+        this.step()
     }
 
-    render = (): void => {
-        throw new Error('Override `#render` in ' + this.constructor.name)
+    initialize = (): void => {}
+
+    step = (): void => {
+        throw new Error('Override `#step` in ' + this.constructor.name)
     }
 
     start = (): void => {
@@ -34,7 +30,9 @@ class GameCommand {
         this.#loop(startTime)
     }
 
-    stop = (): void => {}
+    pause = (): void => {
+        this.#isRunning = false
+    }
 }
 
 export default GameCommand

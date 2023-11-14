@@ -2,10 +2,8 @@ import Sprite from '../abstract/Sprite.class'
 import { divMod } from '../utils/math.utils'
 
 import type { PixelConfig } from '../types/PixelConfig.type'
-import type { PixelPosition } from '../types/PixelPosition'
-import type { TilePosition } from '../types/TilePosition.type'
 import type { TileConfig } from '../types/TileConfig.type'
-import { DrawImageSource } from '../types/DrawImageSource.type'
+import type { DrawImageSource } from '../types/DrawImageSource.type'
 
 interface TileSetConstructor {
     image: HTMLImageElement

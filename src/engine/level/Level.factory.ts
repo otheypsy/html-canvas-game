@@ -4,8 +4,10 @@ import AggregateTileSet from '../tilesets/AggregateTileSet.class'
 import TileSetFactory from '../tilesets/TileSet.factory'
 
 import type { TilePosition } from '../types/TilePosition.type'
+import type GameConfig from '../game/GameConfig.class'
 
 export interface CreateLevel {
+    config: GameConfig
     xMax: number
     yMax: number
     xPixUnit: number
@@ -71,6 +73,11 @@ const create = async (level: CreateLevel): Promise<Level> => {
         xPixUnit: level.xPixUnit,
         yPixUnit: level.yPixUnit,
     }
+    const tileConfig = {
+        xMax,
+        count: xMax * yMax,
+        startId: 0,
+    }
     const tileMaps = {
         collisions: new TileMap({ xMax, yMax }),
         foreground: new TileMap({ xMax, yMax }),
@@ -82,9 +89,11 @@ const create = async (level: CreateLevel): Promise<Level> => {
     await handleTileSets(tileSetAggregate, level.tilesets)
 
     return new Level({
+        config: level.config,
         tileMaps,
         tileSet: tileSetAggregate,
         pixelConfig,
+        tileConfig,
     })
 }
 

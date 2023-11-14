@@ -8,6 +8,22 @@
     </head>
     <body>
         <div id="gameContainer"></div>
+        <div class="modal fade" id="gameModal" tabIndex="-1">
+            <div class="modal-dialog modal-xl modal-fullscreen-xxl-down modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Title</h5>
+                        <button class="btn btn-outline-danger" type="button" data-bs-dismiss="modal">X</button>
+                    </div>
+                    <div class="modal-body">Body</div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script type="module" src='/src/demo/entry.ts'></script>
     </body>
 </html>

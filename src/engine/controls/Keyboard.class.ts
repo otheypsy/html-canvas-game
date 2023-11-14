@@ -1,5 +1,5 @@
 class KeyboardControl {
-    #keys: object
+    readonly #keys: object
 
     constructor(keys: string[]) {
         this.#keys = {}
@@ -23,7 +23,7 @@ class KeyboardControl {
     }
 
     #registerKeyUpEvents = (): void => {
-        window.addEventListener('keydown', (e) => {
+        window.addEventListener('keyup', (e) => {
             if (Object.prototype.hasOwnProperty.call(this.#keys, e.key)) this.#keys[e.key].pressed = false
         })
     }
