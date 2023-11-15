@@ -2,15 +2,13 @@ import { divMod } from '../utils/math.utils'
 
 import type { PixelConfig } from '../types/PixelConfig.type'
 import type { PixelPosition } from '../types/PixelPosition'
-import type Renderer from '../graphics/Renderer.class'
+import type MapRenderer from '../graphics/MapRenderer.class'
 import type AggregateTileSet from '../tilesets/AggregateTileSet.class'
 import type { TilePosition } from '../types/TilePosition.type'
 import type { TileConfig } from '../types/TileConfig.type'
-import type GameConfig from '../game/GameConfig.class'
 import type { RectCoordinates } from '../types/RectCoordinates.type'
 
 interface LevelConstructor {
-    config: GameConfig
     tileMaps: object
     tileSet: AggregateTileSet
     pixelConfig: PixelConfig
@@ -18,14 +16,12 @@ interface LevelConstructor {
 }
 
 class Level {
-    readonly #config: GameConfig
     readonly #tileMaps: object
     readonly #tileSet: AggregateTileSet
     readonly #pixelConfig: PixelConfig
     readonly #tileConfig: TileConfig
 
     constructor(level: LevelConstructor) {
-        this.#config = level.config
         this.#tileMaps = level.tileMaps
         this.#tileSet = level.tileSet
         this.#pixelConfig = level.pixelConfig
@@ -48,12 +44,19 @@ class Level {
         renderer.drawImage({ ...source, ...destination }, isDebug)
     }
 
-    #drawLayer = (renderer: Renderer, layerLabel: string, isDebug: boolean = false): void => {
+    #drawLayer = (renderer: MapRenderer, layerLabel: string, isDebug: boolean = false): void => {
+        const test = renderer.getCurrentViewport()
+        const topLeft = this.pixToTile(test.xPix0, test.yPix0)
+        const bottomRight = this.pixToTile(test.xPix1, test.yPix1)
+        const x0 = Math.max(0, topLeft.x - 2)
+        const y0 = Math.max(0, topLeft.y - 2)
+        const x1 = Math.min(this.#tileConfig.xMax, bottomRight.x + 2)
+        const y1 = Math.min(this.#tileConfig.count / this.#tileConfig.xMax, bottomRight.y + 2)
         for (const layer of this.#tileMaps[layerLabel].tileMap) {
-            for (const index in layer.data) {
-                if (layer.data[index] !== 0) {
-                    const { x, y } = this.indexToTile(index)
-                    this.#drawTile(renderer, layer.data[index], x, y, isDebug)
+            for (let i = x0; i < x1; i++) {
+                for (let j = y0; j < y1; j++) {
+                    const index = this.tileToIndex(i, j)
+                    if (layer.data[index] !== 0) this.#drawTile(renderer, layer.data[index], i, j, isDebug)
                 }
             }
         }
@@ -65,10 +68,10 @@ class Level {
 
     getTileRect = (x, y): RectCoordinates => {
         return {
-            x0: x * this.#pixelConfig.xPixUnit,
-            y0: y * this.#pixelConfig.yPixUnit,
-            x1: x * this.#pixelConfig.xPixUnit + this.#pixelConfig.xPixUnit,
-            y1: y * this.#pixelConfig.yPixUnit + this.#pixelConfig.xPixUnit,
+            xPix0: x * this.#pixelConfig.xPixUnit,
+            yPix0: y * this.#pixelConfig.yPixUnit,
+            xPix1: x * this.#pixelConfig.xPixUnit + this.#pixelConfig.xPixUnit,
+            yPix1: y * this.#pixelConfig.yPixUnit + this.#pixelConfig.xPixUnit,
         }
     }
 
@@ -95,15 +98,15 @@ class Level {
         }
     }
 
-    drawBackground = (renderer: Renderer, isDebug: boolean = false): void => {
+    drawBackground = (renderer: MapRenderer, isDebug: boolean = false): void => {
         this.#drawLayer(renderer, 'background', isDebug)
     }
 
-    drawForeground = (renderer: Renderer, isDebug: boolean = false): void => {
+    drawForeground = (renderer: MapRenderer, isDebug: boolean = false): void => {
         this.#drawLayer(renderer, 'foreground', isDebug)
     }
 
-    drawCollisions = (renderer: Renderer, isDebug: boolean = false): void => {
+    drawCollisions = (renderer: MapRenderer, isDebug: boolean = false): void => {
         this.#drawLayer(renderer, 'collisions', isDebug)
     }
 }
