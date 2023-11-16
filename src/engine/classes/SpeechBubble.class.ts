@@ -1,18 +1,19 @@
-import type Renderer from '../graphics/Renderer.class'
+import type Renderer from '../graphics/MapRenderer.class'
 import GameConfig from '../game/GameConfig.class'
+import BaseRenderer from '../graphics/BaseRenderer.class'
 
 const style = {
     text: new Map([
-        ['font', '1.6rem Arial'],
+        ['font', '1.4rem Arial'],
         ['textAlign', 'center'],
         ['textBaseline', 'top'],
-        ['strokeStyle', 'black'],
-        ['fillStyle', 'black'],
+        ['strokeStyle', '#6c757d'],
+        ['fillStyle', '#6c757d'],
     ]),
     bubble: new Map([
-        ['strokeStyle', 'black'],
+        ['strokeStyle', '#6c757d'],
         ['fillStyle', 'white'],
-        ['lineWidth', 1],
+        ['lineWidth', 3],
     ]),
 }
 class SpeechBubble {
@@ -29,28 +30,28 @@ class SpeechBubble {
     }
 
     #getUpBubblePath = (xPix: number, yPix: number, width: number, height: number): Path2D => {
-        const x0 = xPix - width / 2
-        const x1 = xPix + width / 2
-        const y0 = yPix - height - this.#padding * 2 - this.#pointerHeight
-        const y1 = yPix - this.#pointerHeight
+        const xPix0 = xPix - width / 2
+        const xPix1 = xPix + width / 2
+        const yPix0 = yPix - height - this.#padding * 2 - this.#pointerHeight
+        const yPix1 = yPix - this.#pointerHeight
         const path = new Path2D()
-        path.moveTo(x0 + this.#radius, y0)
-        path.moveTo(x0 + this.#radius, y0)
-        path.lineTo(x1 - this.#radius, y0)
-        path.quadraticCurveTo(x1, y0, x1, y0 + this.#radius)
-        path.lineTo(x1, y1 - this.#radius)
-        path.quadraticCurveTo(x1, y1, x1 - this.#radius, y1)
-        path.lineTo(x0 + width / 2 + this.#radius, y1)
-        path.lineTo(x0 + width / 2, y1 + this.#pointerHeight)
-        path.lineTo(x0 + width / 2 - this.#radius, y1)
-        path.lineTo(x0 + this.#radius, y1)
-        path.quadraticCurveTo(x0, y1, x0, y1 - this.#radius)
-        path.lineTo(x0, y0 + this.#radius)
-        path.quadraticCurveTo(x0, y0, x0 + this.#radius, y0)
+        path.moveTo(xPix0 + this.#radius, yPix0)
+        path.moveTo(xPix0 + this.#radius, yPix0)
+        path.lineTo(xPix1 - this.#radius, yPix0)
+        path.quadraticCurveTo(xPix1, yPix0, xPix1, yPix0 + this.#radius)
+        path.lineTo(xPix1, yPix1 - this.#radius)
+        path.quadraticCurveTo(xPix1, yPix1, xPix1 - this.#radius, yPix1)
+        path.lineTo(xPix0 + width / 2 + this.#radius, yPix1)
+        path.lineTo(xPix0 + width / 2, yPix1 + this.#pointerHeight)
+        path.lineTo(xPix0 + width / 2 - this.#radius, yPix1)
+        path.lineTo(xPix0 + this.#radius, yPix1)
+        path.quadraticCurveTo(xPix0, yPix1, xPix0, yPix1 - this.#radius)
+        path.lineTo(xPix0, yPix0 + this.#radius)
+        path.quadraticCurveTo(xPix0, yPix0, xPix0 + this.#radius, yPix0)
         return path
     }
 
-    drawUp = (renderer: Renderer, text: string, xPix, yPix, width: number = 300): void => {
+    drawUp = (renderer: BaseRenderer, text: string, xPix, yPix, width: number = 300): void => {
         renderer.saveContext()
         renderer.setScale(1 / this.#config.scale)
         renderer.configureStyle(style.text)

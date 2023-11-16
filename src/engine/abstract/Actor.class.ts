@@ -1,4 +1,4 @@
-import type Renderer from '../graphics/Renderer.class'
+import type Renderer from '../graphics/MapRenderer.class'
 import MapMovable from './MapMovable.class'
 
 class Actor extends MapMovable {

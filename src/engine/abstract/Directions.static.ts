@@ -24,11 +24,11 @@ const right: Direction = {
     yOffset: 0,
 }
 
-const Directions = {
+const Directions = Object.freeze({
     UP: up,
     DOWN: down,
     LEFT: left,
     RIGHT: right,
-}
+})
 
 export default Directions

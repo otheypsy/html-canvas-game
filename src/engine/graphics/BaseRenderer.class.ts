@@ -1,18 +1,18 @@
 import type GameCanvas from './GameCanvas.class'
 import type GameConfig from '../game/GameConfig.class'
 import type { DrawImage } from '../types/DrawImage.type'
-import type { DrawText } from '../types/DrawText.type'
+import Camera from './Camera.class'
 
-interface RendererConstructor {
+interface BaseRendererConstructor {
     config: GameConfig
     canvas: GameCanvas
 }
 
-class Renderer {
+class BaseRenderer {
     readonly #config: GameConfig
     readonly #canvas: GameCanvas
 
-    constructor(data: RendererConstructor) {
+    constructor(data: BaseRendererConstructor) {
         this.#config = data.config
         this.#canvas = data.canvas
     }
@@ -25,42 +25,8 @@ class Renderer {
         this.#canvas.context.restore()
     }
 
-    globalTranslate = (): void => {
-        this.#canvas.context.translate(Math.floor(this.#canvas.center.xPix), Math.floor(this.#canvas.center.yPix))
-        this.#canvas.context.scale(this.#config.scale, this.#config.scale)
-        this.#canvas.context.translate(
-            -Math.floor(this.#config.drawOffset.xPix),
-            -Math.floor(this.#config.drawOffset.yPix),
-        )
-    }
-
     setScale = (scale: number): void => {
         this.#canvas.context.scale(scale, scale)
-    }
-
-    drawImage = (data: DrawImage, isDebug: boolean = false): void => {
-        this.#canvas.context.drawImage(
-            data.img,
-            data.sx,
-            data.sy,
-            data.sw,
-            data.sh,
-            Math.floor(data.dx),
-            Math.floor(data.dy),
-            Math.ceil(data.dw),
-            Math.ceil(data.dh),
-        )
-        if (isDebug) {
-            this.#canvas.context.beginPath()
-            this.#canvas.context.strokeStyle = '#f00' // some color/style
-            this.#canvas.context.lineWidth = 2
-            this.#canvas.context.strokeRect(
-                Math.ceil(data.dx),
-                Math.ceil(data.dy),
-                Math.ceil(data.dw),
-                Math.ceil(data.dh),
-            )
-        }
     }
 
     configureStyle = (data: Map<string, number | string>): void => {
@@ -111,4 +77,4 @@ class Renderer {
     }
 }
 
-export default Renderer
+export default BaseRenderer

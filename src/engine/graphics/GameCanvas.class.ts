@@ -7,13 +7,13 @@ const style = {
     pad: 12,
 }
 class GameCanvas {
-    readonly #canvas: HTMLElement
+    readonly #element: HTMLElement
     readonly #context: CanvasRenderingContext2D
     constructor(container: HTMLElement) {
-        const canvas = document.createElement('canvas')
-        this.#initStyle(canvas, container)
-        this.#context = this.#initCanvas(canvas, container)
-        this.#canvas = canvas
+        const element = document.createElement('canvas')
+        this.#initStyle(element, container)
+        this.#context = this.#initCanvas(element, container)
+        this.#element = element
     }
 
     #initStyle = (canvas: HTMLElement, container: HTMLElement): void => {
@@ -33,7 +33,7 @@ class GameCanvas {
         context.oImageSmoothingEnabled = false
         context.webkitImageSmoothingEnabled = false
         context.msImageSmoothingEnabled = false
-        context.fillStyle = 'black'
+        context.fillStyle = '#6c757d'
         context.fillRect(0, 0, canvas.width, canvas.height)
         return context
     }
@@ -42,10 +42,14 @@ class GameCanvas {
         return this.#context
     }
 
+    get element(): HTMLElement {
+        return this.#element
+    }
+
     get center(): PixelPosition {
         return {
-            xPix: this.#canvas.width / 2,
-            yPix: this.#canvas.height / 2,
+            xPix: this.#element.width / 2,
+            yPix: this.#element.height / 2,
         }
     }
 }

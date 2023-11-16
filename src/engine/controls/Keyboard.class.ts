@@ -1,4 +1,4 @@
-class KeyboardControl {
+class Keyboard {
     readonly #keys: object
 
     constructor(keys: string[]) {
@@ -33,4 +33,4 @@ class KeyboardControl {
     }
 }
 
-export default KeyboardControl
+export default Keyboard

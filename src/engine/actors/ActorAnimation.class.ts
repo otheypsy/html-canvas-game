@@ -1,5 +1,5 @@
 import type { Direction } from '../types/Direction.type'
-import Directions from '../abstract/Direction.static'
+import Directions from '../abstract/Directions.static'
 
 interface ActorAnimationConstructor {
     sprites: {

@@ -1,5 +1,5 @@
 import AnimatedSpriteActor from '../actors/AnimatedSpriteActor.class'
-import KeyboardControl from './Keyboard.class'
+import Keyboard from './Keyboard.class'
 
 interface InteractionObserver {
     key: string
@@ -8,9 +8,9 @@ interface InteractionObserver {
 
 class InteractionController {
     readonly #observers: InteractionObserver[]
-    readonly #keyboard: KeyboardControl
+    readonly #keyboard: Keyboard
 
-    constructor(keyboard: KeyboardControl) {
+    constructor(keyboard: Keyboard) {
         this.#observers = []
         this.#keyboard = keyboard
     }
