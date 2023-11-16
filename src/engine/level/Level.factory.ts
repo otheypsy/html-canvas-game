@@ -7,7 +7,6 @@ import type { TilePosition } from '../types/TilePosition.type'
 import type GameConfig from '../game/GameConfig.class'
 
 export interface CreateLevel {
-    config: GameConfig
     xMax: number
     yMax: number
     xPixUnit: number
@@ -89,7 +88,6 @@ const create = async (level: CreateLevel): Promise<Level> => {
     await handleTileSets(tileSetAggregate, level.tilesets)
 
     return new Level({
-        config: level.config,
         tileMaps,
         tileSet: tileSetAggregate,
         pixelConfig,

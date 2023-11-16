@@ -2,7 +2,7 @@ import { Modal as BootstrapModal } from 'bootstrap'
 import AnimatedSpriteActor from '../engine/actors/AnimatedSpriteActor.class'
 import SpeechBubble from '../engine/classes/SpeechBubble.class'
 import { PixelPosition } from '../engine/types/PixelPosition'
-import Renderer from '../engine/graphics/Renderer.class'
+import BaseRenderer from '../engine/graphics/BaseRenderer.class'
 
 class NPC {
     #speechBubble: SpeechBubble
@@ -36,11 +36,11 @@ class NPC {
             yPix < reference.yPix + threshold
     }
 
-    drawSpeechBubble = (renderer: Renderer): void => {
+    drawSpeechBubble = (renderer: BaseRenderer): void => {
         if (this.#isNearby) {
             const { xPix } = this.#actor.getMapPixPos()
-            const { y0 } = this.#actor.getRect()
-            this.#speechBubble.drawUp(renderer, 'Hello World\n\nPress `E` to interact', xPix, y0)
+            const { yPix0 } = this.#actor.getRect()
+            this.#speechBubble.drawUp(renderer, 'Hello World\n\nPress `E` to interact', xPix, yPix0)
         }
     }
 }

@@ -1,41 +1,56 @@
-import type KeyboardControl from './Keyboard.class'
+import type Keyboard from './Keyboard.class'
+import Touchscreen from './Touchscreen.class'
+
+type InputType = 'keyboard' | 'touchscreen'
 
 interface InputObserver {
-    key: string
-    callback: (key: string) => void
-}
-
-interface InputObservers {
-    keys: string[]
-    callback: (key: string) => void
+    type: InputType
+    inputs: string[]
+    callback: (key: string, type: InputType) => void
 }
 
 class Controls {
-    readonly #keyboard: KeyboardControl
+    readonly #keyboard: Keyboard
+    readonly #touchscreen: Touchscreen
     readonly #observers: InputObserver[]
 
-    constructor(keyboard: KeyboardControl) {
+    constructor(keyboard: Keyboard, touchscreen: Touchscreen) {
         this.#observers = []
         this.#keyboard = keyboard
+        this.#touchscreen = touchscreen
+    }
+
+    #checkKeyboard = (observer: InputObserver): void => {
+        for (const input of observer.inputs) {
+            if (this.#keyboard?.keys[input]?.pressed === true) {
+                observer.callback(input, 'keyboard')
+            }
+        }
+    }
+
+    #checkTouchscreen = (observer: InputObserver): void => {
+        for (const input of observer.inputs) {
+            if (this.#touchscreen?.touches[input]?.active === true) {
+                observer.callback(input, 'touchscreen')
+            }
+        }
     }
 
     addObserver = (observer: InputObserver): void => {
         this.#observers.push(observer)
     }
 
-    addObservers = (observers: InputObservers): void => {
-        for (const key of observers.keys) {
-            this.#observers.push({
-                key,
-                callback: observers.callback,
-            })
-        }
-    }
-
     step = (): void => {
         for (const observer of this.#observers) {
-            if (this.#keyboard?.keys[observer.key]?.pressed === true) {
-                observer.callback(observer.key)
+            switch (observer.type) {
+                case 'keyboard': {
+                    this.#checkKeyboard(observer)
+                    break
+                }
+                case 'touchscreen': {
+                    this.#checkTouchscreen(observer)
+                    break
+                }
             }
         }
     }

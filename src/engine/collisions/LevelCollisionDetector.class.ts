@@ -32,16 +32,16 @@ return this.#collisionTiles.reduce((aggregate, collision): object[] => {
 class LevelCollisionDetector {
     #checkCollision = (rect1: RectCoordinates, rect2: RectCoordinates): boolean => {
         // Check if Rect-1 Area is zero
-        if (rect1.x0 === rect1.x1 || rect1.y0 === rect1.y1) return false
+        if (rect1.xPix0 === rect1.xPix1 || rect1.yPix0 === rect1.yPix1) return false
 
         // Check if Rect-2 Area is zero
-        if (rect2.x0 === rect2.x1 || rect2.y0 === rect2.y1) return false
+        if (rect2.xPix0 === rect2.xPix1 || rect2.yPix0 === rect2.yPix1) return false
 
         // Horizontal Check
-        if (rect1.x0 >= rect2.x1 || rect2.x0 >= rect1.x1) return false
+        if (rect1.xPix0 >= rect2.xPix1 || rect2.xPix0 >= rect1.xPix1) return false
 
         // Vertical Check
-        if (rect1.y0 >= rect2.y1 || rect2.y0 >= rect1.y1) return false
+        if (rect1.yPix0 >= rect2.yPix1 || rect2.yPix0 >= rect1.yPix1) return false
 
         return true
     }
@@ -56,10 +56,10 @@ class LevelCollisionDetector {
                     if (layer.data[index]?.toString() !== '0') {
                         const actorRect = actor.getRect()
                         const collisionRect = level.getTileRect(i, j)
-                        actorRect.x0 += offset * actor.getMoveSpeed() * direction.xOffset
-                        actorRect.x1 += offset * actor.getMoveSpeed() * direction.xOffset
-                        actorRect.y0 += offset * actor.getMoveSpeed() * direction.yOffset
-                        actorRect.y1 += offset * actor.getMoveSpeed() * direction.yOffset
+                        actorRect.xPix0 += offset * actor.getMoveSpeed() * direction.xOffset
+                        actorRect.xPix1 += offset * actor.getMoveSpeed() * direction.xOffset
+                        actorRect.yPix0 += offset * actor.getMoveSpeed() * direction.yOffset
+                        actorRect.yPix1 += offset * actor.getMoveSpeed() * direction.yOffset
                         if (this.#checkCollision(actorRect, collisionRect)) {
                             return true
                         }

@@ -1,6 +1,6 @@
 export interface RectCoordinates {
-    x0: number
-    y0: number
-    x1: number
-    y1: number
+    xPix0: number
+    yPix0: number
+    xPix1: number
+    yPix1: number
 }

@@ -30,10 +30,10 @@ class MapMovable {
 
     getRect = (): RectCoordinates => {
         return {
-            x0: this.mapPixPos.xPix,
-            y0: this.mapPixPos.yPix,
-            x1: this.mapPixPos.xPix,
-            y1: this.mapPixPos.yPix,
+            xPix0: this.mapPixPos.xPix,
+            yPix0: this.mapPixPos.yPix,
+            xPix1: this.mapPixPos.xPix,
+            yPix1: this.mapPixPos.yPix,
         }
     }
 

@@ -45,13 +45,13 @@ class Level {
     }
 
     #drawLayer = (renderer: MapRenderer, layerLabel: string, isDebug: boolean = false): void => {
-        const test = renderer.getCurrentViewport()
-        const topLeft = this.pixToTile(test.xPix0, test.yPix0)
-        const bottomRight = this.pixToTile(test.xPix1, test.yPix1)
-        const x0 = Math.max(0, topLeft.x - 2)
-        const y0 = Math.max(0, topLeft.y - 2)
-        const x1 = Math.min(this.#tileConfig.xMax, bottomRight.x + 2)
-        const y1 = Math.min(this.#tileConfig.count / this.#tileConfig.xMax, bottomRight.y + 2)
+        const viewport = renderer.getCurrentViewport()
+        const topLeft = this.pixToTile(viewport.xPix0, viewport.yPix0)
+        const bottomRight = this.pixToTile(viewport.xPix1, viewport.yPix1)
+        const x0 = Math.max(0, topLeft.x - 1)
+        const y0 = Math.max(0, topLeft.y - 1)
+        const x1 = Math.min(this.#tileConfig.xMax, bottomRight.x + 1)
+        const y1 = Math.min(this.#tileConfig.count / this.#tileConfig.xMax, bottomRight.y + 1)
         for (const layer of this.#tileMaps[layerLabel].tileMap) {
             for (let i = x0; i < x1; i++) {
                 for (let j = y0; j < y1; j++) {
