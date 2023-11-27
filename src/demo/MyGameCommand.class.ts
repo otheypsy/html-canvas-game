@@ -1,21 +1,22 @@
 import GameCommand from '../engine/game/GameCommand.class'
 import Directions from '../engine/abstract/Directions.static'
 import type MyGame from './MyGame.class'
+import type WildWestGame from './WildWestGame.class'
 import type { Direction } from '../engine/types/Direction.type'
 
 class MyGameCommand extends GameCommand {
-    game: MyGame
+    game: MyGame | WildWestGame
 
-    constructor(game: MyGame) {
+    constructor(game: MyGame | WildWestGame) {
         super(game.config.fps)
         this.game = game
     }
 
     #collisionMove = (direction: Direction): void => {
         const isColliding = this.game.collisionDetector.checkCollision(this.game.level, this.game.player, direction, 1)
-        this.game.player.animate(10, direction.label)
+        this.game.player.animate(5, direction.label)
         if (!isColliding) {
-            this.game.player.move(direction, 1)
+            this.game.player.move(direction, 0.5)
             this.game.camera.setMapOffset(this.game.player.getMapPixPos())
         }
     }
@@ -77,13 +78,13 @@ class MyGameCommand extends GameCommand {
         this.game.mapRenderer.saveContext()
         this.game.mapRenderer.clearCanvas()
         this.game.mapRenderer.globalTranslate()
-        this.game.level.drawBackground(this.game.mapRenderer)
+        this.game.level.drawTileMap(this.game.mapRenderer, '-1')
         this.game.player.draw(this.game.mapRenderer)
         for (const npc of this.game.npcs) {
             npc.actor.draw(this.game.mapRenderer)
             npc.drawSpeechBubble(this.game.baseRenderer)
         }
-        this.game.level.drawForeground(this.game.mapRenderer)
+        this.game.level.drawTileMap(this.game.mapRenderer, '1')
         // this.game.level.drawCollisions(this.game.mapRenderer)
         this.game.mapRenderer.restoreContext()
     }

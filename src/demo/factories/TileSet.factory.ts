@@ -4,6 +4,7 @@ import type { PixelConfig } from '../../engine/types/PixelConfig.type'
 import type { TileConfig } from '../../engine/types/TileConfig.type'
 
 interface CreateTileSet {
+    gameName: string
     folderName: string
     fileName: string
     startId: number
@@ -17,11 +18,12 @@ const loadImage = async (url): Promise<HTMLImageElement> => {
 }
 
 const create = async (tileSet: CreateTileSet): Promise<TileSet> => {
-    const relativeImgPath = '../../data/tilesets/' + tileSet.folderName + '/' + tileSet.fileName + '.tileset.png'
+    const relativeImgPath = '../../data/' + tileSet.gameName + '/tilesets/' + tileSet.folderName + '/' + tileSet.fileName + '.tileset.png'
+    console.log(tileSet.gameName)
     const imgUrl = new URL(relativeImgPath, import.meta.url).href
     const image = await loadImage(imgUrl)
     const config = await import(
-        /* @vite-ignore */ '../../data/tilesets/' + tileSet.folderName + '/' + tileSet.fileName + '.tileset.json'
+        /* @vite-ignore */ '../../data/' + tileSet.gameName + '/tilesets/' + tileSet.folderName + '/' + tileSet.fileName + '.tileset.json'
     )
 
     const tileConfig: TileConfig = {

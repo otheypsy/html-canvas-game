@@ -8,17 +8,13 @@ import OffscreenTileMap from './OffscreenTileMap.class'
 import LiveTileMap from './LiveTileMap.class'
 
 interface LevelConstructor {
-    tileMaps: {
-        background: LiveTileMap | OffscreenTileMap
-        foreground: LiveTileMap | OffscreenTileMap
-        collisions: LiveTileMap | OffscreenTileMap
-    }
+    tileMaps: Map<string, LiveTileMap | OffscreenTileMap>
     tileSet: AggregateTileSet
     helper: LevelHelper
 }
 
 class Level {
-    readonly #tileMaps: object
+    readonly #tileMaps: Map<string, LiveTileMap | OffscreenTileMap>
     readonly #tileSet: AggregateTileSet
     readonly helper: LevelHelper
 
@@ -28,24 +24,17 @@ class Level {
         this.helper = level.helper
     }
 
-    getTileMap = (type: string): LiveTileMap | OffscreenTileMap => {
-        return this.#tileMaps[type]
+    getTileMap = (zIndex: string): LiveTileMap | OffscreenTileMap => {
+        return this.#tileMaps.get(zIndex)
     }
 
     getTileSet = (): AggregateTileSet => {
         return this.#tileSet
     }
 
-    drawBackground = (renderer: MapRenderer): void => {
-        this.#tileMaps?.background.drawTileMap(renderer)
-    }
-
-    drawForeground = (renderer: MapRenderer): void => {
-        this.#tileMaps?.foreground.drawTileMap(renderer)
-    }
-
-    drawCollisions = (renderer: MapRenderer): void => {
-        this.#tileMaps?.collisions.drawTileMap(renderer)
+    drawTileMap = (renderer: MapRenderer, zIndex:string): void => {
+        if(!this.#tileMaps.has(zIndex)) return
+        this.#tileMaps.get(zIndex).drawTileMap(renderer)
     }
 }
 

@@ -10,24 +10,24 @@ import TileMap from '../../engine/level/TileMap.class'
 import OffscreenRenderer from '../../engine/graphics/OffScreenRenderer.class'
 
 export interface CreateLevel {
+    gameName: string
     xMax: number
     yMax: number
     xPixUnit: number
     yPixUnit: number
-    start: TilePosition
     layers: object[]
     tilesets: object[]
 }
 
-const handleLayer = (tileMaps: object, layer: object): void => {
-    const category = layer?.properties?.find((property) => property.name === 'category').value ?? 'background'
-    if (!Object.hasOwn(tileMaps, category)) {
-        tileMaps[category] = {
-            category,
+const handleLayer = (tileMaps: Map<number, OffscreenTileMap>, layer: object): void => {
+    const zIndex = layer?.properties?.find(property => property.name === 'zIndex').value ?? -1
+    if (!Object.hasOwn(tileMaps, zIndex)) {
+        tileMaps[zIndex] = {
+            zIndex,
             layers: [layer],
         }
     } else {
-        tileMaps[category].layers.push(layer)
+        tileMaps[zIndex].layers.push(layer)
     }
 }
 
@@ -50,10 +50,11 @@ const handleLayers = (tileMaps: object, layers: object[]): object => {
     return tileMaps
 }
 
-const handleTileSets = async (tileSetAggregate: AggregateTileSet, tileSets: object[]): Promise<void> => {
+const handleTileSets = async (gameName:string, tileSetAggregate: AggregateTileSet, tileSets: object[]): Promise<void> => {
     for (const tileSet of tileSets) {
-        const name = tileSet.source.split('.')[0]
+        const name = tileSet.name.split('.')[0]
         const tileSetObj = await TileSetFactory.create({
+            gameName,
             folderName: name,
             fileName: name,
             startId: tileSet.firstgid,
@@ -79,14 +80,13 @@ const create = async (level: CreateLevel): Promise<Level> => {
 
     const helper = new LevelHelper({ pixelConfig, tileConfig })
     const tileSet = new AggregateTileSet()
-    await handleTileSets(tileSet, level.tilesets)
+    await handleTileSets(level.gameName, tileSet, level.tilesets)
 
-    const tileMapsTemp = handleLayers({}, level.layers)
+    const layers = handleLayers({}, level.layers)
     const offScreenRenderer = new OffscreenRenderer()
-    const tileMaps = {
-        collisions: new OffscreenTileMap(offScreenRenderer, helper, tileSet, tileMapsTemp.collisions),
-        foreground: new OffscreenTileMap(offScreenRenderer, helper, tileSet, tileMapsTemp.foreground),
-        background: new OffscreenTileMap(offScreenRenderer, helper, tileSet, tileMapsTemp.background),
+    const tileMaps = new Map()
+    for(const zIndex in layers) {
+        tileMaps.set(zIndex, new OffscreenTileMap(offScreenRenderer, helper, tileSet, layers[zIndex]))
     }
 
     return new Level({
