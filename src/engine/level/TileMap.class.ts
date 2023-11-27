@@ -1,35 +1,20 @@
-interface TileMapConstructor {
-    xMax: number
-    yMax: number
-}
-
 class TileMap {
-    readonly #tileMap = []
-    readonly #xMax: number
-    readonly #yMax: number
+    readonly layers = []
 
-    constructor(tileMap: TileMapConstructor) {
-        this.#xMax = tileMap.xMax
-        this.#yMax = tileMap.yMax
+    constructor(tileMap: object) {
+        for (const layer of tileMap.layers) {
+            this.addLayer(layer)
+        }
     }
 
     addLayer = (layer): void => {
-        this.#tileMap.push({
+        this.layers.push({
+            id: layer.id,
             name: layer.name,
+            visible: layer.visible,
+            opacity: layer.opacity,
             data: layer.data,
         })
-    }
-
-    get tileMap(): object {
-        return this.#tileMap
-    }
-
-    get xMax(): number {
-        return this.#xMax
-    }
-
-    get yMax(): number {
-        return this.#yMax
     }
 }
 export default TileMap

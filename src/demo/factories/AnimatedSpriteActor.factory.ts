@@ -1,8 +1,8 @@
-import AggregateTileSet from '../tilesets/AggregateTileSet.class'
-import TileSetFactory from '../tilesets/TileSet.factory'
+import AggregateTileSet from '../../engine/tilesets/AggregateTileSet.class'
+import TileSetFactory from './TileSet.factory'
 
-import ActorAnimation from './ActorAnimation.class'
-import AnimatedSpriteActor from './AnimatedSpriteActor.class'
+import ActorAnimation from '../../engine/actors/ActorAnimation.class'
+import AnimatedSpriteActor from '../../engine/actors/AnimatedSpriteActor.class'
 
 interface CreateAnimatedSpriteActor {
     tilesets: object[]

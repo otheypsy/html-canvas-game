@@ -4,11 +4,11 @@ import Level from '../engine/level/Level.class'
 import MapRenderer from '../engine/graphics/MapRenderer.class'
 import Controls from '../engine/controls/Controls.class'
 import LevelCollisionDetector from '../engine/collisions/LevelCollisionDetector.class'
-import AnimatedSpriteActorFactory from '../engine/actors/AnimatedSpriteActor.factory'
+import AnimatedSpriteActorFactory from './factories/AnimatedSpriteActor.factory'
 import Keyboard from '../engine/controls/Keyboard.class'
 import mainLevelMap from '../data/levels/main/main.map.json'
 import mainLevelConfig from '../data/levels/main/main.config.json'
-import LevelFactory from '../engine/level/Level.factory'
+import LevelFactory from './factories/Level.factory'
 import playerConfig from '../data/actors/player.config.json'
 import npcConfig from '../data/actors/oldMan.config.json'
 import type AnimatedSpriteActor from '../engine/actors/AnimatedSpriteActor.class'
@@ -17,6 +17,8 @@ import SpeechBubble from '../engine/classes/SpeechBubble.class'
 import Touchscreen from '../engine/controls/Touchscreen.class'
 import Camera from '../engine/graphics/Camera.class'
 import BaseRenderer from '../engine/graphics/BaseRenderer.class'
+import OffscreenTileMap from '../engine/level/OffscreenTileMap.class'
+import OffscreenRenderer from '../engine/graphics/OffScreenRenderer.class'
 
 class MyGame {
     config: GameConfig
@@ -26,6 +28,7 @@ class MyGame {
     controls: Controls
     npcs: NPC[]
     player: AnimatedSpriteActor
+    offscreenRenderer: OffscreenRenderer
     baseRenderer: BaseRenderer
     mapRenderer: MapRenderer
     collisionDetector: LevelCollisionDetector
@@ -42,6 +45,7 @@ class MyGame {
         const touchscreen = new Touchscreen(this.canvas.element)
         const keyboard = new Keyboard(['w', 'a', 's', 'd', 'e'])
         this.controls = new Controls(keyboard, touchscreen)
+        this.offscreenRenderer = new OffscreenRenderer()
         this.mapRenderer = new MapRenderer({
             config: this.config,
             canvas: this.canvas,
@@ -79,7 +83,7 @@ class MyGame {
             yPixUnit: playerConfig.tileheight,
             sprites: playerConfig.sprites,
         })
-        const playerStartPos = this.level.tileToPix(playerConfig.start.x, playerConfig.start.y)
+        const playerStartPos = this.level.helper.tileToPix(playerConfig.start.x, playerConfig.start.y)
         this.player.setMapPixPos(playerStartPos.xPix, playerStartPos.yPix)
         this.player.type = 'player'
         this.player.setMoveSpeed(document.getElementById('speed').value)
@@ -94,7 +98,7 @@ class MyGame {
             yPixUnit: npcConfig.tileheight,
             sprites: npcConfig.sprites,
         })
-        const npcStartPos = this.level.tileToPix(npcConfig.start.x, npcConfig.start.y)
+        const npcStartPos = this.level.helper.tileToPix(npcConfig.start.x, npcConfig.start.y)
         npcActor.setMapPixPos(npcStartPos.xPix, npcStartPos.yPix)
         const npc = new NPC(npcActor, speechBubble)
         this.npcs.push(npc)

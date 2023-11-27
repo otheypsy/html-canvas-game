@@ -1,7 +1,7 @@
-import TileSet from './TileSet.class'
+import TileSet from '../../engine/tilesets/TileSet.class'
 
-import type { PixelConfig } from '../types/PixelConfig.type'
-import type { TileConfig } from '../types/TileConfig.type'
+import type { PixelConfig } from '../../engine/types/PixelConfig.type'
+import type { TileConfig } from '../../engine/types/TileConfig.type'
 
 interface CreateTileSet {
     folderName: string

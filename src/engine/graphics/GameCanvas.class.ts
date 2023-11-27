@@ -27,14 +27,12 @@ class GameCanvas {
 
     #initCanvas = (canvas: HTMLElement, container: HTMLElement): CanvasRenderingContext2D => {
         container.append(canvas)
-        const context = canvas.getContext('2d')
+        const context = canvas.getContext('2d', { alpha: false })
         context.imageSmoothingEnabled = false
         context.mozImageSmoothingEnabled = false
         context.oImageSmoothingEnabled = false
         context.webkitImageSmoothingEnabled = false
         context.msImageSmoothingEnabled = false
-        context.fillStyle = '#6c757d'
-        context.fillRect(0, 0, canvas.width, canvas.height)
         return context
     }
 

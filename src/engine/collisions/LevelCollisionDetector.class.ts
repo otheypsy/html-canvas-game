@@ -47,15 +47,16 @@ class LevelCollisionDetector {
     }
 
     checkCollision = (level: Level, actor: MapMovable, direction: Direction, offset: number = 1): boolean => {
+        const collisions = level.getTileMap('collisions')
         const currentPix = actor.getMapPixPos()
-        const { x, y } = level.pixToTile(currentPix.xPix, currentPix.yPix)
+        const { x, y } = level.helper.pixToTile(currentPix.xPix, currentPix.yPix)
         for (let i = x - 3; i <= x + 3; i++) {
             for (let j = y - 3; j <= y + 3; j++) {
-                for (const layer of level.getTileMaps('collisions')) {
-                    const index = level.tileToIndex(i, j)
+                for (const layer of collisions.layers) {
+                    const index = level.helper.tileToIndex(i, j)
                     if (layer.data[index]?.toString() !== '0') {
                         const actorRect = actor.getRect()
-                        const collisionRect = level.getTileRect(i, j)
+                        const collisionRect = level.helper.getTileRect(i, j)
                         actorRect.xPix0 += offset * actor.getMoveSpeed() * direction.xOffset
                         actorRect.xPix1 += offset * actor.getMoveSpeed() * direction.xOffset
                         actorRect.yPix0 += offset * actor.getMoveSpeed() * direction.yOffset

@@ -75,15 +75,16 @@ class MyGameCommand extends GameCommand {
 
     drawStep = (): void => {
         this.game.mapRenderer.saveContext()
+        this.game.mapRenderer.clearCanvas()
         this.game.mapRenderer.globalTranslate()
         this.game.level.drawBackground(this.game.mapRenderer)
-        // this.game.level.drawCollisions(this.game.mapRenderer)
+        this.game.player.draw(this.game.mapRenderer)
         for (const npc of this.game.npcs) {
             npc.actor.draw(this.game.mapRenderer)
             npc.drawSpeechBubble(this.game.baseRenderer)
         }
-        this.game.player.draw(this.game.mapRenderer)
         this.game.level.drawForeground(this.game.mapRenderer)
+        // this.game.level.drawCollisions(this.game.mapRenderer)
         this.game.mapRenderer.restoreContext()
     }
 

@@ -1,113 +1,51 @@
-import { divMod } from '../utils/math.utils'
-
 import type { PixelConfig } from '../types/PixelConfig.type'
-import type { PixelPosition } from '../types/PixelPosition'
 import type MapRenderer from '../graphics/MapRenderer.class'
 import type AggregateTileSet from '../tilesets/AggregateTileSet.class'
-import type { TilePosition } from '../types/TilePosition.type'
 import type { TileConfig } from '../types/TileConfig.type'
-import type { RectCoordinates } from '../types/RectCoordinates.type'
+import LevelHelper from './LevelHelper.class'
+import TileMap from './TileMap.class'
+import OffscreenTileMap from './OffscreenTileMap.class'
+import LiveTileMap from './LiveTileMap.class'
 
 interface LevelConstructor {
-    tileMaps: object
+    tileMaps: {
+        background: LiveTileMap | OffscreenTileMap
+        foreground: LiveTileMap | OffscreenTileMap
+        collisions: LiveTileMap | OffscreenTileMap
+    }
     tileSet: AggregateTileSet
-    pixelConfig: PixelConfig
-    tileConfig: TileConfig
+    helper: LevelHelper
 }
 
 class Level {
     readonly #tileMaps: object
     readonly #tileSet: AggregateTileSet
-    readonly #pixelConfig: PixelConfig
-    readonly #tileConfig: TileConfig
+    readonly helper: LevelHelper
 
     constructor(level: LevelConstructor) {
         this.#tileMaps = level.tileMaps
         this.#tileSet = level.tileSet
-        this.#pixelConfig = level.pixelConfig
-        this.#tileConfig = level.tileConfig
+        this.helper = level.helper
     }
 
-    #drawTile = (renderer: Renderer, gid: number, x, y, isDebug: boolean = false): void => {
-        if (gid === 0) return
-
-        const source = this.#tileSet.getSource(gid)
-        if (source === undefined) return
-
-        const destination = {
-            dx: x * this.#pixelConfig.xPixUnit,
-            dy: y * this.#pixelConfig.yPixUnit,
-            dw: this.#pixelConfig.xPixUnit,
-            dh: this.#pixelConfig.yPixUnit,
-        }
-
-        renderer.drawImage({ ...source, ...destination }, isDebug)
+    getTileMap = (type: string): LiveTileMap | OffscreenTileMap => {
+        return this.#tileMaps[type]
     }
 
-    #drawLayer = (renderer: MapRenderer, layerLabel: string, isDebug: boolean = false): void => {
-        const viewport = renderer.getCurrentViewport()
-        const topLeft = this.pixToTile(viewport.xPix0, viewport.yPix0)
-        const bottomRight = this.pixToTile(viewport.xPix1, viewport.yPix1)
-        const x0 = Math.max(0, topLeft.x - 1)
-        const y0 = Math.max(0, topLeft.y - 1)
-        const x1 = Math.min(this.#tileConfig.xMax, bottomRight.x + 1)
-        const y1 = Math.min(this.#tileConfig.count / this.#tileConfig.xMax, bottomRight.y + 1)
-        for (const layer of this.#tileMaps[layerLabel].tileMap) {
-            for (let i = x0; i < x1; i++) {
-                for (let j = y0; j < y1; j++) {
-                    const index = this.tileToIndex(i, j)
-                    if (layer.data[index] !== 0) this.#drawTile(renderer, layer.data[index], i, j, isDebug)
-                }
-            }
-        }
+    getTileSet = (): AggregateTileSet => {
+        return this.#tileSet
     }
 
-    getTileMaps = (type: string): string[][] => {
-        return this.#tileMaps[type]?.tileMap
+    drawBackground = (renderer: MapRenderer): void => {
+        this.#tileMaps?.background.drawTileMap(renderer)
     }
 
-    getTileRect = (x, y): RectCoordinates => {
-        return {
-            xPix0: x * this.#pixelConfig.xPixUnit,
-            yPix0: y * this.#pixelConfig.yPixUnit,
-            xPix1: x * this.#pixelConfig.xPixUnit + this.#pixelConfig.xPixUnit,
-            yPix1: y * this.#pixelConfig.yPixUnit + this.#pixelConfig.xPixUnit,
-        }
+    drawForeground = (renderer: MapRenderer): void => {
+        this.#tileMaps?.foreground.drawTileMap(renderer)
     }
 
-    indexToTile = (index): TilePosition => {
-        const [y, x] = divMod(index, this.#tileConfig.xMax)
-        return { x, y }
-    }
-
-    tileToIndex = (x, y): number => {
-        return y * this.#tileConfig.xMax + x
-    }
-
-    tileToPix = (x, y): PixelPosition => {
-        return {
-            xPix: x * this.#pixelConfig.xPixUnit + this.#pixelConfig.xPixUnit / 2,
-            yPix: y * this.#pixelConfig.yPixUnit + this.#pixelConfig.yPixUnit / 2,
-        }
-    }
-
-    pixToTile = (xPix, yPix): TilePosition => {
-        return {
-            x: Math.floor(xPix / this.#pixelConfig.xPixUnit),
-            y: Math.floor(yPix / this.#pixelConfig.yPixUnit),
-        }
-    }
-
-    drawBackground = (renderer: MapRenderer, isDebug: boolean = false): void => {
-        this.#drawLayer(renderer, 'background', isDebug)
-    }
-
-    drawForeground = (renderer: MapRenderer, isDebug: boolean = false): void => {
-        this.#drawLayer(renderer, 'foreground', isDebug)
-    }
-
-    drawCollisions = (renderer: MapRenderer, isDebug: boolean = false): void => {
-        this.#drawLayer(renderer, 'collisions', isDebug)
+    drawCollisions = (renderer: MapRenderer): void => {
+        this.#tileMaps?.collisions.drawTileMap(renderer)
     }
 }
 
