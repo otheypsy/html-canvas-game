@@ -10,21 +10,23 @@ interface CreateTileSet {
     startId: number
 }
 
-const loadImage = async (url): Promise<HTMLImageElement> => {
+const loadImage = async (url: string): Promise<HTMLImageElement> => {
     const img = new Image()
     img.src = url
     await img.decode()
     return img
 }
 
+const loadJSON = async (url: string): Promise<object> => {
+    const response = await fetch(url)
+    return response.json()
+}
+
 const create = async (tileSet: CreateTileSet): Promise<TileSet> => {
-    const relativeImgPath = '../../data/' + tileSet.gameName + '/tilesets/' + tileSet.folderName + '/' + tileSet.fileName + '.tileset.png'
-    console.log(tileSet.gameName)
+    const relativeImgPath = '/assets/' + tileSet.gameName + '/tilesets/' + tileSet.folderName + '/' + tileSet.fileName + '.tileset.png'
     const imgUrl = new URL(relativeImgPath, import.meta.url).href
     const image = await loadImage(imgUrl)
-    const config = await import(
-        /* @vite-ignore */ '../../data/' + tileSet.gameName + '/tilesets/' + tileSet.folderName + '/' + tileSet.fileName + '.tileset.json'
-    )
+    const config = await loadJSON('/assets/' + tileSet.gameName + '/tilesets/' + tileSet.folderName + '/' + tileSet.fileName + '.tileset.json')
 
     const tileConfig: TileConfig = {
         xMax: config.columns,
