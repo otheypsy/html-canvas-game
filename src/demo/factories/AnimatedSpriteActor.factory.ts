@@ -5,6 +5,7 @@ import ActorAnimation from '../../engine/actors/ActorAnimation.class'
 import AnimatedSpriteActor from '../../engine/actors/AnimatedSpriteActor.class'
 
 interface CreateAnimatedSpriteActor {
+    gameName: string
     tilesets: object[]
     xPixUnit: number
     yPixUnit: number
@@ -16,9 +17,10 @@ interface CreateAnimatedSpriteActor {
     }
 }
 
-const handleTileSets = async (tileSetAggregate: AggregateTileSet, tileSets: object[]): Promise<void> => {
+const handleTileSets = async (gameName: string, tileSetAggregate: AggregateTileSet, tileSets: object[]): Promise<void> => {
     for (const tileSet of tileSets) {
         const tileSetObj = await TileSetFactory.create({
+            gameName,
             folderName: tileSet.folderName,
             fileName: tileSet.fileName,
             startId: tileSet.firstgid,
@@ -34,7 +36,7 @@ const create = async (actor: CreateAnimatedSpriteActor): Promise<AnimatedSpriteA
     }
 
     const tileSetAggregate = new AggregateTileSet()
-    await handleTileSets(tileSetAggregate, actor.tilesets)
+    await handleTileSets(actor.gameName, tileSetAggregate, actor.tilesets)
 
     const animation = new ActorAnimation({
         sprites: actor.sprites,

@@ -1,15 +1,6 @@
 {
-    "image": "../../tileset/base/base.tileset.png",
     "columns": 32,
-    "imageheight": 384,
-    "imagewidth": 384,
-    "margin": 0,
-    "name": "base.tileset",
-    "spacing": 0,
     "tilecount": 1024,
-    "tiledversion": "1.10.2",
     "tileheight": 12,
-    "tilewidth": 12,
-    "type": "tileset",
-    "version": "1.10"
+    "tilewidth": 12
 }

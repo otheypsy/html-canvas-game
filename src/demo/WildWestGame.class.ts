@@ -6,8 +6,7 @@ import Controls from '../engine/controls/Controls.class'
 import LevelCollisionDetector from '../engine/collisions/LevelCollisionDetector.class'
 import AnimatedSpriteActorFactory from './factories/AnimatedSpriteActor.factory'
 import Keyboard from '../engine/controls/Keyboard.class'
-import mainLevelMap from '../data/levels/main/main.map.json'
-import mainLevelConfig from '../data/levels/main/main.config.json'
+import mainLevelTileMap from '../data/wildWest/tilemaps/main/main.tilemap.json'
 import LevelFactory from './factories/Level.factory'
 import playerConfig from '../data/actors/player.config.json'
 import npcConfig from '../data/actors/oldMan.config.json'
@@ -17,10 +16,8 @@ import SpeechBubble from '../engine/classes/SpeechBubble.class'
 import Touchscreen from '../engine/controls/Touchscreen.class'
 import Camera from '../engine/graphics/Camera.class'
 import BaseRenderer from '../engine/graphics/BaseRenderer.class'
-import OffscreenTileMap from '../engine/level/OffscreenTileMap.class'
-import OffscreenRenderer from '../engine/graphics/OffScreenRenderer.class'
 
-class MyGame {
+class WildWestGame {
     config: GameConfig
     camera: Camera
     canvas: GameCanvas
@@ -28,7 +25,6 @@ class MyGame {
     controls: Controls
     npcs: NPC[]
     player: AnimatedSpriteActor
-    offscreenRenderer: OffscreenRenderer
     baseRenderer: BaseRenderer
     mapRenderer: MapRenderer
     collisionDetector: LevelCollisionDetector
@@ -38,14 +34,13 @@ class MyGame {
         this.canvas = new GameCanvas(gameContainer)
         this.config = new GameConfig()
         this.config.scale = document.getElementById('scale').value
-        this.config.fps = 120
+        this.config.fps = 60
         this.camera = new Camera()
         this.camera.setCameraWidth(this.canvas.element.width)
         this.camera.setCameraHeight(this.canvas.element.height)
         const touchscreen = new Touchscreen(this.canvas.element)
         const keyboard = new Keyboard(['w', 'a', 's', 'd', 'e'])
         this.controls = new Controls(keyboard, touchscreen)
-        this.offscreenRenderer = new OffscreenRenderer()
         this.mapRenderer = new MapRenderer({
             config: this.config,
             canvas: this.canvas,
@@ -59,25 +54,26 @@ class MyGame {
 
     #creatLevel = async (): Promise<void> => {
         const startLevelData = {
-            ...mainLevelMap,
-            ...mainLevelConfig,
+            ...mainLevelTileMap,
             config: this.config,
         }
         this.level = await LevelFactory.create({
+            gameName: 'wildWest',
             xMax: startLevelData.width,
             yMax: startLevelData.height,
             xPixUnit: startLevelData.tilewidth,
             yPixUnit: startLevelData.tileheight,
             layers: startLevelData.layers,
             tilesets: startLevelData.tilesets,
-            start: startLevelData.start,
         })
         this.collisionDetector = new LevelCollisionDetector()
     }
 
     #creatActors = async (): Promise<void> => {
+        this.npcs = []
         // Create Player
         this.player = await AnimatedSpriteActorFactory.create({
+            gameName: 'wildWest',
             tilesets: playerConfig.tilesets,
             xPixUnit: playerConfig.tilewidth,
             yPixUnit: playerConfig.tileheight,
@@ -88,20 +84,6 @@ class MyGame {
         this.player.type = 'player'
         this.player.setMoveSpeed(document.getElementById('speed').value)
         this.camera.setMapOffset(this.player.getMapPixPos())
-
-        // Create NPC
-        const speechBubble = new SpeechBubble(this.config)
-        this.npcs = []
-        const npcActor = await AnimatedSpriteActorFactory.create({
-            tilesets: npcConfig.tilesets,
-            xPixUnit: npcConfig.tilewidth,
-            yPixUnit: npcConfig.tileheight,
-            sprites: npcConfig.sprites,
-        })
-        const npcStartPos = this.level.helper.tileToPix(npcConfig.start.x, npcConfig.start.y)
-        npcActor.setMapPixPos(npcStartPos.xPix, npcStartPos.yPix)
-        const npc = new NPC(npcActor, speechBubble)
-        this.npcs.push(npc)
     }
 
     #registerSettingsForm = (): void => {
@@ -121,4 +103,4 @@ class MyGame {
     }
 }
 
-export default MyGame
+export default WildWestGame
