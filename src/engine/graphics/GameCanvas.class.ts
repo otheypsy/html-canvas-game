@@ -4,8 +4,9 @@ const style = {
     border: '2px solid gray',
     display: 'block',
     margin: 'auto',
-    pad: 12,
+    pad: 5,
 }
+
 class GameCanvas {
     readonly #element: HTMLElement
     readonly #context: CanvasRenderingContext2D
@@ -16,16 +17,17 @@ class GameCanvas {
         this.#element = element
     }
 
-    #initStyle = (canvas: HTMLElement, container: HTMLElement): void => {
-        canvas.style.border = style.border
-        canvas.style.display = style.display
-        canvas.style.margin = style.margin
-        canvas.width = container.offsetWidth - style.pad
-        canvas.height = container.offsetHeight - style.pad
-        canvas.style.imageRendering = 'pixelated'
+    readonly #initStyle = (element: HTMLElement, container: HTMLElement): void => {
+        element.style.border = style.border
+        element.style.display = style.display
+        element.style.margin = style.margin
+        console.log(container)
+        element.width = container.clientWidth - style.pad
+        element.height = container.clientHeight - style.pad
+        element.style.imageRendering = 'pixelated'
     }
 
-    #initCanvas = (canvas: HTMLElement, container: HTMLElement): CanvasRenderingContext2D => {
+    readonly #initCanvas = (canvas: HTMLElement, container: HTMLElement): CanvasRenderingContext2D => {
         container.append(canvas)
         const context = canvas.getContext('2d', { alpha: false })
         context.imageSmoothingEnabled = false

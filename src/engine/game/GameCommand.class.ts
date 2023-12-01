@@ -1,37 +1,52 @@
+import FPSController from "./FPSController.class"
+import GameClock from "./GameClock.class"
+
 class GameCommand {
-    #isRunning: boolean
-    #oldTime: number
-    #fpsInterval: number
+    readonly #fpsController: FPSController
+    readonly #gameClock: GameClock
+    #isRunning: boolean = false
 
-    constructor(fps: number) {
+    constructor(fps: number=0, logicIterval: number=10) {
         this.#isRunning = false
-        this.#oldTime = 0
-        this.#fpsInterval = 1000 / fps
+        this.#fpsController = new FPSController(fps)
+        this.#gameClock = new GameClock(logicIterval)
     }
 
-    #loop = (newTime): void => {
+    readonly #logicLoop = (): void => {
         if (!this.#isRunning) return undefined
-        window.requestAnimationFrame(this.#loop)
-
-        const elapsed = newTime - this.#oldTime
-        if (elapsed <= this.#fpsInterval) return undefined
-        this.step()
+        this.#gameClock.start(this.logicStep)
     }
 
-    initialize = (): void => {}
+    readonly #drawLoop = (): void => {
+        if (!this.#isRunning) return undefined
+        window.requestAnimationFrame(this.#drawLoop)
+
+        if(!this.#fpsController.check()) return undefined
+        this.drawStep()
+    }
+
+    logicStep = (): void => {
+        throw new Error('Override `logicStep` in ' + this.constructor.name)
+    }
+
+    drawStep = (): void => {
+        throw new Error('Override `drawStep` in ' + this.constructor.name)
+    }
 
     step = (): void => {
-        throw new Error('Override `#step` in ' + this.constructor.name)
+        this.logicStep()
+        this.drawStep()
     }
 
     start = (): void => {
         this.#isRunning = true
-        const startTime = window.performance.now()
-        this.#loop(startTime)
+        this.#logicLoop()
+        this.#drawLoop()
     }
 
-    pause = (): void => {
+    stop = (): void => {
         this.#isRunning = false
+        this.#gameClock.stop()
     }
 }
 

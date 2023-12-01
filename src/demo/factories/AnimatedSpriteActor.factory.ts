@@ -4,7 +4,7 @@ import TileSetFactory from './TileSet.factory'
 import ActorAnimation from '../../engine/actors/ActorAnimation.class'
 import AnimatedSpriteActor from '../../engine/actors/AnimatedSpriteActor.class'
 
-interface CreateAnimatedSpriteActor {
+interface CreateNPC {
     gameName: string
     tilesets: object[]
     xPixUnit: number
@@ -29,19 +29,20 @@ const handleTileSets = async (gameName: string, tileSetAggregate: AggregateTileS
     }
 }
 
-const create = async (actor: CreateAnimatedSpriteActor): Promise<AnimatedSpriteActor> => {
+const create = async (npc: CreateNPC): Promise<AnimatedSpriteActor> => {
+    
     const pixelConfig = {
-        xPixUnit: actor.xPixUnit,
-        yPixUnit: actor.yPixUnit,
+        xPixUnit: npc.xPixUnit,
+        yPixUnit: npc.yPixUnit,
     }
 
     const tileSetAggregate = new AggregateTileSet()
-    await handleTileSets(actor.gameName, tileSetAggregate, actor.tilesets)
+    await handleTileSets(npc.gameName, tileSetAggregate, npc.tilesets)
 
     const animation = new ActorAnimation({
-        sprites: actor.sprites,
+        sprites: npc.sprites,
     })
-    animation.animationType = Object.keys(actor.sprites)[0]
+    animation.animationType = Object.keys(npc.sprites)[0]
 
     return new AnimatedSpriteActor({
         tileSet: tileSetAggregate,

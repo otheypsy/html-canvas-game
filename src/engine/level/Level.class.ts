@@ -24,7 +24,7 @@ class Level {
         this.helper = level.helper
     }
 
-    getTileMap = (zIndex: string): LiveTileMap | OffscreenTileMap => {
+    getTileMap = (zIndex: string): LiveTileMap | OffscreenTileMap | undefined => {
         return this.#tileMaps.get(zIndex)
     }
 
@@ -32,9 +32,14 @@ class Level {
         return this.#tileSet
     }
 
-    drawTileMap = (renderer: MapRenderer, zIndex:string): void => {
+    drawTileMap = (renderer: MapRenderer, zIndex:string, isDebug: boolean = false): void => {
         if(!this.#tileMaps.has(zIndex)) return
-        this.#tileMaps.get(zIndex).drawTileMap(renderer)
+        this.#tileMaps.get(zIndex)?.drawTileMap({
+            renderer,
+            helper: this.helper,
+            tileSet: this.#tileSet,
+            isDebug
+        })
     }
 }
 

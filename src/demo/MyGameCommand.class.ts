@@ -1,7 +1,7 @@
 import GameCommand from '../engine/game/GameCommand.class'
 import Directions from '../engine/abstract/Directions.static'
-import type MyGame from './MyGame.class'
-import type WildWestGame from './WildWestGame.class'
+import type MyGame from './island/IslandGame.class'
+import type WildWestGame from './wildWest/WildWestGame.class'
 import type { Direction } from '../engine/types/Direction.type'
 
 class MyGameCommand extends GameCommand {
@@ -12,16 +12,16 @@ class MyGameCommand extends GameCommand {
         this.game = game
     }
 
-    #collisionMove = (direction: Direction): void => {
+    readonly #collisionMove = (direction: Direction): void => {
         const isColliding = this.game.collisionDetector.checkCollision(this.game.level, this.game.player, direction, 1)
-        this.game.player.animate(5, direction.label)
+        this.game.player.animate(10, direction.label)
         if (!isColliding) {
-            this.game.player.move(direction, 0.5)
+            this.game.player.move(direction, 1)
             this.game.camera.setMapOffset(this.game.player.getMapPixPos())
         }
     }
 
-    #movePlayer = (input: string, type: string): void => {
+    readonly #movePlayer = (input: string, type: string): void => {
         switch (true) {
             case (input === 'w' && type === 'keyboard') || (input === 'up' && type === 'touchscreen'): {
                 this.#collisionMove(Directions.UP)
@@ -42,7 +42,7 @@ class MyGameCommand extends GameCommand {
         }
     }
 
-    #npcInteract = (): void => {
+    readonly #npcInteract = (): void => {
         for (const controller of this.game.npcs) {
             controller?.interact()
         }
@@ -69,7 +69,7 @@ class MyGameCommand extends GameCommand {
     logicStep = (): void => {
         this.game.controls.step()
         for (const npc of this.game.npcs) {
-            npc.actor.animate()
+            npc.actor.animate(10)
             npc.updateIsNearby(this.game.player.getMapPixPos(), 50)
         }
     }
@@ -85,13 +85,8 @@ class MyGameCommand extends GameCommand {
             npc.drawSpeechBubble(this.game.baseRenderer)
         }
         this.game.level.drawTileMap(this.game.mapRenderer, '1')
-        // this.game.level.drawCollisions(this.game.mapRenderer)
+        // this.game.level.drawTileMap(this.game.mapRenderer, '0')
         this.game.mapRenderer.restoreContext()
-    }
-
-    step = (): void => {
-        this.logicStep()
-        this.drawStep()
     }
 }
 

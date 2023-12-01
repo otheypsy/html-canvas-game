@@ -40,21 +40,21 @@ class MapRenderer {
     }
 
     globalTranslate = (): void => {
-        this.#canvas.context.translate(Math.floor(this.#canvas.center.xPix), Math.floor(this.#canvas.center.yPix))
+        this.#canvas.context.translate(this.#canvas.center.xPix, this.#canvas.center.yPix)
         this.setScale(this.#config.scale)
 
         this.#canvas.context.translate(
-            -Math.floor(this.#camera.getMapOffset().xPix),
-            -Math.floor(this.#camera.getMapOffset().yPix),
+            -this.#camera.getMapOffset().xPix,
+            -this.#camera.getMapOffset().yPix,
         )
     }
 
     getCurrentViewport = (): RectCoordinates => {
         const mapOffset = this.#camera.getMapOffset()
-        const xPix0 = Math.floor(mapOffset.xPix - this.#canvas.element.width / (2 * this.#config.scale))
-        const yPix0 = Math.floor(mapOffset.yPix - this.#canvas.element.height / (2 * this.#config.scale))
-        const xPix1 = Math.ceil(mapOffset.xPix + this.#canvas.element.width / this.#config.scale)
-        const yPix1 = Math.ceil(mapOffset.yPix + this.#canvas.element.height / this.#config.scale)
+        const xPix0 = mapOffset.xPix - this.#canvas.element.width / (2 * this.#config.scale)
+        const yPix0 = mapOffset.yPix - this.#canvas.element.height / (2 * this.#config.scale)
+        const xPix1 = mapOffset.xPix + this.#canvas.element.width / this.#config.scale
+        const yPix1 = mapOffset.yPix + this.#canvas.element.height / this.#config.scale
         return {
             xPix0,
             yPix0,
@@ -67,11 +67,21 @@ class MapRenderer {
         this.#canvas.context.beginPath()
         this.#canvas.context.strokeStyle = '#f00' // some color/style
         this.#canvas.context.lineWidth = 2 / this.#config.scale
-        this.#canvas.context.strokeRect(Math.ceil(data.dx), Math.ceil(data.dy), Math.ceil(data.dw), Math.ceil(data.dh))
+        this.#canvas.context.strokeRect(data.dx, data.dy, data.dw, data.dh)
     }
 
     drawImage = (data: DrawImage, isDebug: boolean = false): void => {
-        this.#canvas.context.drawImage(data.img, data.sx, data.sy, data.sw, data.sh, data.dx, data.dy, data.dw, data.dh)
+        this.#canvas.context.drawImage(
+            data.img, 
+            Math.floor(data.sx), 
+            Math.floor(data.sy),
+            Math.ceil(data.sw),
+            Math.ceil(data.sh),
+            Math.floor(data.dx),
+            Math.floor(data.dy),
+            Math.ceil(data.dw),
+            Math.ceil(data.dh)
+        )
         if (isDebug) this.drawDebugGrid(data)
     }
 }

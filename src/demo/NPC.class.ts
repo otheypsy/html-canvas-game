@@ -5,14 +5,18 @@ import { PixelPosition } from '../engine/types/PixelPosition'
 import BaseRenderer from '../engine/graphics/BaseRenderer.class'
 
 class NPC {
-    #speechBubble: SpeechBubble
+    readonly #speechBubble: SpeechBubble
+    readonly #dialogue: string
+    readonly #modalType: string | null
     #isNearby: boolean
 
     readonly #actor: AnimatedSpriteActor
-    constructor(actor: AnimatedSpriteActor, speechBubble: SpeechBubble) {
+    constructor(actor: AnimatedSpriteActor, speechBubble: SpeechBubble, dialogue:string, modalType: string) {
         this.#actor = actor
         this.#isNearby = false
         this.#speechBubble = speechBubble
+        this.#dialogue = dialogue
+        this.#modalType = modalType
     }
 
     get actor(): AnimatedSpriteActor {
@@ -20,14 +24,14 @@ class NPC {
     }
 
     interact = (): void => {
-        if (this.#isNearby) {
+        if (this.#isNearby && this.#modalType !== null) {
             const element = document.getElementById('gameModal')
             const modal = BootstrapModal.getOrCreateInstance(element)
             modal.show()
         }
     }
 
-    updateIsNearby = (reference: PixelPosition, threshold: number): void => {
+    updateIsNearby = (reference: PixelPosition, threshold: number = 50): void => {
         const { xPix, yPix } = this.#actor.getMapPixPos()
         this.#isNearby =
             xPix > reference.xPix - threshold &&
@@ -40,7 +44,7 @@ class NPC {
         if (this.#isNearby) {
             const { xPix } = this.#actor.getMapPixPos()
             const { yPix0 } = this.#actor.getRect()
-            this.#speechBubble.drawUp(renderer, 'Hello World\n\nPress `E` to interact', xPix, yPix0)
+            this.#speechBubble.drawUp(renderer, this.#dialogue, xPix, yPix0)
         }
     }
 }

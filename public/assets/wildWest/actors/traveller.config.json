@@ -1,0 +1,21 @@
+{
+
+    "tileheight": 40,
+    "tilewidth": 40,
+    "tilesets": [
+        {
+            "firstgid": 1,
+            "folderName": "npc",
+            "fileName": "coyote"
+        }
+    ],
+    "sprites": {
+        "idle": [1, 55, 56, 57, 58, 58, 60, 61, 62, 63, 64]
+    },
+    "start": {
+        "x": 19,
+        "y": 35
+    },
+    "dialogue": "Welcome to town! Speak to others for more information",
+    "modalType": null
+}

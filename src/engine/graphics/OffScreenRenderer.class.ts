@@ -6,7 +6,7 @@ class OffscreenRenderer {
         canvas.context.beginPath()
         canvas.context.strokeStyle = '#f00'
         canvas.context.lineWidth = 1
-        canvas.context.strokeRect(Math.ceil(data.dx), Math.ceil(data.dy), Math.ceil(data.dw), Math.ceil(data.dh))
+        canvas.context.strokeRect(data.dx, data.dy, data.dw, data.dh)
     }
 
     drawImage = (canvas: GameOffscreenCanvas, data: DrawImage, isDebug: boolean = false): void => {

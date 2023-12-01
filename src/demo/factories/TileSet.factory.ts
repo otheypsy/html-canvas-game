@@ -1,4 +1,5 @@
 import TileSet from '../../engine/tilesets/TileSet.class'
+import { loadImage, loadJSON } from '../services/App.services'
 
 import type { PixelConfig } from '../../engine/types/PixelConfig.type'
 import type { TileConfig } from '../../engine/types/TileConfig.type'
@@ -8,18 +9,6 @@ interface CreateTileSet {
     folderName: string
     fileName: string
     startId: number
-}
-
-const loadImage = async (url: string): Promise<HTMLImageElement> => {
-    const img = new Image()
-    img.src = url
-    await img.decode()
-    return img
-}
-
-const loadJSON = async (url: string): Promise<object> => {
-    const response = await fetch(url)
-    return response.json()
 }
 
 const create = async (tileSet: CreateTileSet): Promise<TileSet> => {

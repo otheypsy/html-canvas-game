@@ -1,0 +1,21 @@
+{
+
+    "tileheight": 25,
+    "tilewidth": 25,
+    "tilesets": [
+        {
+            "firstgid": 1,
+            "folderName": "npc",
+            "fileName": "npc"
+        }
+    ],
+    "sprites": {
+        "idle": [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 9, 9, 9, 9, 9]
+    },
+    "start": {
+        "x": 28,
+        "y": 28
+    },
+    "dialogue": "Hello World\n\nPress `E` to interact",
+    "modalType": "personal"
+}

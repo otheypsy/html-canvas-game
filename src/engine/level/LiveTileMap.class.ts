@@ -5,7 +5,7 @@ import LevelHelper from './LevelHelper.class'
 import AggregateTileSet from '../tilesets/AggregateTileSet.class'
 
 class LiveTileMap extends TileMap {
-    #drawTile = (data: {
+    readonly #drawTile = (data: {
         renderer: MapRenderer
         helper: LevelHelper
         tileSet: AggregateTileSet

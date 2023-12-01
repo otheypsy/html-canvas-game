@@ -1,16 +1,13 @@
 import TileMap from './TileMap.class'
-import MapRenderer from '../graphics/MapRenderer.class'
-import { RectCoordinates } from '../types/RectCoordinates.type'
-import OffscreenCanvasClass from '../graphics/GameOffscreenCanvas.class'
-import LevelHelper from './LevelHelper.class'
 import GameOffscreenCanvas from '../graphics/GameOffscreenCanvas.class'
-import AggregateTileSet from '../tilesets/AggregateTileSet.class'
-import BaseRenderer from '../graphics/BaseRenderer.class'
-import levelHelperClass from './LevelHelper.class'
-import OffscreenRenderer from '../graphics/OffScreenRenderer.class'
+
+import type OffscreenRenderer from '../graphics/OffScreenRenderer.class'
+import type MapRenderer from '../graphics/MapRenderer.class'
+import type LevelHelper from './LevelHelper.class'
+import type AggregateTileSet from '../tilesets/AggregateTileSet.class'
 
 class OffscreenTileMap extends TileMap {
-    #offscreenCanvas: GameOffscreenCanvas
+    readonly #offscreenCanvas: GameOffscreenCanvas
 
     constructor(
         renderer: OffscreenRenderer,
@@ -26,7 +23,7 @@ class OffscreenTileMap extends TileMap {
         this.#initializeCanvasImage(renderer, helper, tileSet, isDebug ?? false)
     }
 
-    #drawTile = (data: {
+    readonly #drawTile = (data: {
         renderer: OffscreenRenderer
         helper: LevelHelper
         tileSet: AggregateTileSet
@@ -50,13 +47,15 @@ class OffscreenTileMap extends TileMap {
         data.renderer.drawImage(this.#offscreenCanvas, { ...source, ...destination }, data.isDebug)
     }
 
-    #initializeCanvasImage = (
+    readonly #initializeCanvasImage = (
         renderer: OffscreenRenderer,
         helper: LevelHelper,
         tileSet: AggregateTileSet,
         isDebug: boolean = false,
     ): void => {
         for (const layer of this.layers) {
+            this.#offscreenCanvas.context.save()
+            this.#offscreenCanvas.context.globalAlpha = layer.opacity
             for (const index in layer.data) {
                 const { x, y } = helper.indexToTile(index)
                 this.#drawTile({
@@ -69,16 +68,17 @@ class OffscreenTileMap extends TileMap {
                     isDebug,
                 })
             }
+            this.#offscreenCanvas.context.restore()
         }
     }
 
-    drawTileMap = (renderer: MapRenderer): void => {
-        const viewport = renderer.getCurrentViewport()
+    drawTileMap = (data: { renderer: MapRenderer}): void => {
+        const viewport = data.renderer.getCurrentViewport()
         const xPix0 = Math.max(0, viewport.xPix0)
         const yPix0 = Math.max(0, viewport.yPix0)
         const xPix1 = Math.min(this.#offscreenCanvas.element.width, viewport.xPix1)
         const yPix1 = Math.min(this.#offscreenCanvas.element.height, viewport.yPix1)
-        renderer.drawImage(
+        data.renderer.drawImage(
             {
                 img: this.#offscreenCanvas.element,
                 sx: xPix0,

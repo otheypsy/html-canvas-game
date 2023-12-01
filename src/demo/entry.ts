@@ -1,5 +1,6 @@
 import '../style.css'
-import WildWestGame from './WildWestGame.class'
+import WildWestGame from './wildWest/WildWestGame.class'
+// import IslandGame from './island/IslandGame.class'
 import MyGameCommand from './MyGameCommand.class'
 
 const initialize = async (): Promise<MyGameCommand> => {

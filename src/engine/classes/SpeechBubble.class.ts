@@ -4,7 +4,7 @@ import BaseRenderer from '../graphics/BaseRenderer.class'
 
 const style = {
     text: new Map([
-        ['font', '1.4rem Arial'],
+        ['font', '1.2rem Courier New'],
         ['textAlign', 'center'],
         ['textBaseline', 'top'],
         ['strokeStyle', '#6c757d'],
@@ -24,12 +24,12 @@ class SpeechBubble {
 
     constructor(config: GameConfig) {
         this.#config = config
-        this.#padding = 10
+        this.#padding = 20
         this.#radius = 10
         this.#pointerHeight = 10
     }
 
-    #getUpBubblePath = (xPix: number, yPix: number, width: number, height: number): Path2D => {
+    readonly #getUpBubblePath = (xPix: number, yPix: number, width: number, height: number): Path2D => {
         const xPix0 = xPix - width / 2
         const xPix1 = xPix + width / 2
         const yPix0 = yPix - height - this.#padding * 2 - this.#pointerHeight
@@ -51,7 +51,7 @@ class SpeechBubble {
         return path
     }
 
-    drawUp = (renderer: BaseRenderer, text: string, xPix, yPix, width: number = 300): void => {
+    drawUp = (renderer: BaseRenderer, text: string, xPix: number, yPix: number, width: number = 300): void => {
         renderer.saveContext()
         renderer.setScale(1 / this.#config.scale)
         renderer.configureStyle(style.text)
