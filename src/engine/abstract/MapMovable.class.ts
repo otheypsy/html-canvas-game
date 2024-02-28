@@ -1,10 +1,8 @@
 import type { PixelPosition } from '../types/PixelPosition'
-import type { Direction } from '../types/Direction.type'
-import type { RectCoordinates } from '../types/RectCoordinates.type'
 
 class MapMovable {
-    protected moveSpeed: number = 1
-    protected mapPixPos: PixelPosition = {
+    moveSpeed: number = 1
+    mapPixPos: PixelPosition = {
         xPix: 0,
         yPix: 0,
     }
@@ -17,7 +15,7 @@ class MapMovable {
         return this.moveSpeed
     }
 
-    setMapPixPos = (xPix, yPix): void => {
+    setMapPixPos = (xPix: number, yPix: number): void => {
         this.mapPixPos = {
             xPix,
             yPix,
@@ -28,18 +26,9 @@ class MapMovable {
         return this.mapPixPos
     }
 
-    getRect = (): RectCoordinates => {
-        return {
-            xPix0: this.mapPixPos.xPix,
-            yPix0: this.mapPixPos.yPix,
-            xPix1: this.mapPixPos.xPix,
-            yPix1: this.mapPixPos.yPix,
-        }
-    }
-
-    move = (direction: Direction, offset: number = 1): void => {
-        this.mapPixPos.xPix += offset * this.moveSpeed * direction.xOffset
-        this.mapPixPos.yPix += offset * this.moveSpeed * direction.yOffset
+    move = (xOffset: number = 0, yOffset: number = 0): void => {
+        this.mapPixPos.xPix += this.moveSpeed * xOffset
+        this.mapPixPos.yPix += this.moveSpeed * yOffset
     }
 }
 

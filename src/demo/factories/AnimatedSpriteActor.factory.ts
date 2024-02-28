@@ -1,20 +1,15 @@
 import AggregateTileSet from '../../engine/tilesets/AggregateTileSet.class'
 import TileSetFactory from './TileSet.factory'
-
-import ActorAnimation from '../../engine/actors/ActorAnimation.class'
 import AnimatedSpriteActor from '../../engine/actors/AnimatedSpriteActor.class'
+import MapMovable from '../../engine/abstract/MapMovable.class'
+import SpriteAnimation from '../../engine/animations/SpriteAnimation.class'
 
 interface CreateNPC {
     gameName: string
     tilesets: object[]
     xPixUnit: number
     yPixUnit: number
-    sprites: {
-        up: number[]
-        left: number[]
-        down: number[]
-        right: number[]
-    }
+    sprites: Record<string, number[]>
 }
 
 const handleTileSets = async (gameName: string, tileSetAggregate: AggregateTileSet, tileSets: object[]): Promise<void> => {
@@ -38,16 +33,14 @@ const create = async (npc: CreateNPC): Promise<AnimatedSpriteActor> => {
 
     const tileSetAggregate = new AggregateTileSet()
     await handleTileSets(npc.gameName, tileSetAggregate, npc.tilesets)
-
-    const animation = new ActorAnimation({
-        sprites: npc.sprites,
-    })
-    animation.animationType = Object.keys(npc.sprites)[0]
+    const animation = new SpriteAnimation(npc.sprites)
+    const movable = new MapMovable()
 
     return new AnimatedSpriteActor({
         tileSet: tileSetAggregate,
         pixelConfig,
         animation,
+        movable
     })
 }
 

@@ -30,13 +30,11 @@ class WildWestGame {
 
     readonly #createCore = (): void => {
         const gameContainer = document.getElementById('gameContainer')
-        this.canvas = new GameCanvas(gameContainer)
         this.config = new GameConfig()
-        this.config.scale = document.getElementById('scale').value
-        this.config.fps = 120
+        this.config.scale = document.getElementById('scale')?.value
+        this.config.fps = 0
+        this.canvas = new GameCanvas(gameContainer, this.config.scale)
         this.camera = new Camera()
-        this.camera.setCameraWidth(this.canvas.element.width)
-        this.camera.setCameraHeight(this.canvas.element.height)
         const touchscreen = new Touchscreen(this.canvas.element)
         const keyboard = new Keyboard(['w', 'a', 's', 'd', 'e'])
         this.controls = new Controls(keyboard, touchscreen)
@@ -75,10 +73,10 @@ class WildWestGame {
             sprites: playerConfig.sprites,
         })
         const playerStartPos = this.level.helper.tileToPix(playerConfig.start.x, playerConfig.start.y)
-        this.player.setMapPixPos(playerStartPos.xPix, playerStartPos.yPix)
-        this.player.type = 'player'
-        this.player.setMoveSpeed(document.getElementById('speed')?.value ?? 1)
-        this.camera.setMapOffset(this.player.getMapPixPos())
+        this.player.movable.setMapPixPos(playerStartPos.xPix, playerStartPos.yPix)
+        this.player.movable.setMoveSpeed(document.getElementById('speed')?.value ?? 1)
+        this.camera.setMapOffset(this.player.movable.getMapPixPos())
+        console.log('Player Created')
     }
 
     readonly #createNPCs = async (): Promise<void> => {
@@ -96,19 +94,24 @@ class WildWestGame {
                 sprites: config.sprites,
             })
             const startPixPos = this.level.helper.tileToPix(config.start.x, config.start.y)
-            actor.setMapPixPos(startPixPos.xPix, startPixPos.yPix)
+            actor.movable.setMapPixPos(startPixPos.xPix, startPixPos.yPix)
             const instance = new NPC(actor, speechBubble, config.dialogue, config.modalType)
             this.npcs.push(instance)
+            console.log('NPC ' + npc + ' Created')
         }
 
     }
 
     readonly #registerSettingsForm = (): void => {
-        document.getElementById('scale').addEventListener('change', (e): void => {
-            this.config.scale = e.target.value
+        document.getElementById('scale')?.addEventListener('change', (e: Event): void => {
+            const { target } = e
+            const scale = parseInt((target as HTMLInputElement).value)
+            this.config.scale = scale
         })
-        document.getElementById('speed').addEventListener('change', (e): void => {
-            this.player.setMoveSpeed(e.target.value)
+        document.getElementById('speed')?.addEventListener('change', (e: Event): void => {
+            const { target } = e
+            const speed = parseInt((target as HTMLInputElement).value)
+            this.player.movable.setMoveSpeed(speed)
         })
     }
 

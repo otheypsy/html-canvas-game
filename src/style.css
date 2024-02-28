@@ -1,10 +1,6 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 
-html, body {
-    height: 100%;
+body {
+    height: 99vh;
     margin: 0;
-}
-
-#gameContainer {
-    height: 100%;
 }

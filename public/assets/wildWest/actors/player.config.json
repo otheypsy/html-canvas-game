@@ -1,34 +1,19 @@
 {
 
-    "tileheight": 17,
-    "tilewidth": 12,
+    "tileheight": 29,
+    "tilewidth": 16,
     "tilesets": [
         {
             "firstgid": 1,
             "folderName": "player",
-            "fileName": "up"
-        },
-        {
-            "firstgid": 5,
-            "folderName": "player",
-            "fileName": "left"
-        },
-        {
-            "firstgid": 9,
-            "folderName": "player",
-            "fileName": "down"
-        },
-        {
-            "firstgid": 13,
-            "folderName": "player",
-            "fileName": "right"
+            "fileName": "detective"
         }
     ],
     "sprites": {
-        "up": [1, 2, 3, 4],
-        "left": [5, 6, 7, 8],
-        "down": [9, 10, 11, 12],
-        "right": [13, 14, 15, 16]
+        "up": [25, 26, 27, 28, 29, 30, 31, 32],
+        "left": [41, 42, 43, 44, 45, 46, 47, 48],
+        "down": [17, 18, 19, 20, 21, 22, 23, 24],
+        "right": [33, 34, 35, 36, 37, 38, 39, 40]
     },
     "start": {
         "x": 20,

@@ -4,7 +4,7 @@ class GameOffscreenCanvas {
 
     constructor(width: number, height: number) {
         this.#element = new OffscreenCanvas(width, height)
-        this.#context = this.#element.getContext('2d', { alpha: true })
+        this.#context = this.#element.getContext('2d', { alpha: true }) as OffscreenCanvasRenderingContext2D
     }
 
     get element(): OffscreenCanvas {

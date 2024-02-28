@@ -1,4 +1,4 @@
-import TileSet from '../../engine/tilesets/TileSet.class'
+import BasicTileSet from '../../engine/tilesets/BasicTileSet.class'
 import { loadImage, loadJSON } from '../services/App.services'
 
 import type { PixelConfig } from '../../engine/types/PixelConfig.type'
@@ -11,7 +11,7 @@ interface CreateTileSet {
     startId: number
 }
 
-const create = async (tileSet: CreateTileSet): Promise<TileSet> => {
+const create = async (tileSet: CreateTileSet): Promise<BasicTileSet> => {
     const relativeImgPath = '/assets/' + tileSet.gameName + '/tilesets/' + tileSet.folderName + '/' + tileSet.fileName + '.tileset.png'
     const imgUrl = new URL(relativeImgPath, import.meta.url).href
     const image = await loadImage(imgUrl)
@@ -28,7 +28,7 @@ const create = async (tileSet: CreateTileSet): Promise<TileSet> => {
         yPixUnit: config.tileheight,
     }
 
-    return new TileSet({
+    return new BasicTileSet({
         image,
         tileConfig,
         pixelConfig,

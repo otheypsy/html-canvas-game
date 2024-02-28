@@ -1,7 +1,7 @@
 import type Level from '../level/Level.class'
-import type MapMovable from '../abstract/MapMovable.class'
 import type { Direction } from '../types/Direction.type'
 import type { RectCoordinates } from '../types/RectCoordinates.type'
+import type { Actor } from '../types/Actor.type'
 
 /*
 Selecting Collision Tiles -- OLD
@@ -30,7 +30,7 @@ return this.#collisionTiles.reduce((aggregate, collision): object[] => {
  */
 
 class LevelCollisionDetector {
-    #checkCollision = (rect1: RectCoordinates, rect2: RectCoordinates): boolean => {
+    readonly #checkCollision = (rect1: RectCoordinates, rect2: RectCoordinates): boolean => {
         // Check if Rect-1 Area is zero
         if (rect1.xPix0 === rect1.xPix1 || rect1.yPix0 === rect1.yPix1) return false
 
@@ -46,9 +46,9 @@ class LevelCollisionDetector {
         return true
     }
 
-    checkCollision = (level: Level, actor: MapMovable, direction: Direction, offset: number = 1): boolean => {
+    checkCollision = (level: Level, actor: Actor, direction: Direction, offset: number = 1): boolean => {
         const collisions = level.getTileMap('0')
-        const currentPix = actor.getMapPixPos()
+        const currentPix = actor.movable.getMapPixPos()
         const { x, y } = level.helper.pixToTile(currentPix.xPix, currentPix.yPix)
         for (let i = x - 3; i <= x + 3; i++) {
             for (let j = y - 3; j <= y + 3; j++) {
@@ -57,10 +57,10 @@ class LevelCollisionDetector {
                     if (layer.data[index]?.toString() !== '0') {
                         const actorRect = actor.getRect()
                         const collisionRect = level.helper.getTileRect(i, j)
-                        actorRect.xPix0 += offset * actor.getMoveSpeed() * direction.xOffset
-                        actorRect.xPix1 += offset * actor.getMoveSpeed() * direction.xOffset
-                        actorRect.yPix0 += offset * actor.getMoveSpeed() * direction.yOffset
-                        actorRect.yPix1 += offset * actor.getMoveSpeed() * direction.yOffset
+                        actorRect.xPix0 += offset * actor.movable.getMoveSpeed() * direction.xOffset
+                        actorRect.xPix1 += offset * actor.movable.getMoveSpeed() * direction.xOffset
+                        actorRect.yPix0 += offset * actor.movable.getMoveSpeed() * direction.yOffset
+                        actorRect.yPix1 += offset * actor.movable.getMoveSpeed() * direction.yOffset
                         if (this.#checkCollision(actorRect, collisionRect)) {
                             return true
                         }

@@ -1,9 +1,9 @@
-import Sprite from '../abstract/Sprite.class'
 import { divMod } from '../utils/math.utils'
 
 import type { PixelConfig } from '../types/PixelConfig.type'
 import type { TileConfig } from '../types/TileConfig.type'
 import type { DrawImageSource } from '../types/DrawImageSource.type'
+import type { TileSet } from '../types/TileSet.type'
 
 interface TileSetConstructor {
     image: HTMLImageElement
@@ -11,17 +11,18 @@ interface TileSetConstructor {
     pixelConfig: PixelConfig
 }
 
-class TileSet extends Sprite {
+class BasicTileSet implements TileSet {
+    readonly #image: HTMLImageElement
     readonly #tileConfig: TileConfig
     readonly #pixelConfig: PixelConfig
 
     constructor(tileSet: TileSetConstructor) {
-        super(tileSet.image)
+        this.#image = tileSet.image
         this.#tileConfig = tileSet.tileConfig
         this.#pixelConfig = tileSet.pixelConfig
     }
 
-    get tileConfig(): TileConfig {
+    getTileConfig(): TileConfig {
         return this.#tileConfig
     }
 
@@ -33,8 +34,8 @@ class TileSet extends Sprite {
         const sw = this.#pixelConfig.xPixUnit
         const sh = this.#pixelConfig.yPixUnit
 
-        return { img: this.image, sx, sy, sw, sh }
+        return { img: this.#image, sx, sy, sw, sh }
     }
 }
 
-export default TileSet
+export default BasicTileSet

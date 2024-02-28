@@ -1,14 +1,31 @@
-import TileMap from './TileMap.class'
-import MapRenderer from '../graphics/MapRenderer.class'
-import { RectCoordinates } from '../types/RectCoordinates.type'
-import LevelHelper from './LevelHelper.class'
-import AggregateTileSet from '../tilesets/AggregateTileSet.class'
+import type MapRenderer from '../graphics/MapRenderer.class'
+import type LevelHelper from './LevelHelper.class'
+import type { TileSet } from '../types/TileSet.type'
+import type { TileLayer } from '../types/TileLayer.type'
 
-class LiveTileMap extends TileMap {
+class LiveTileMap {
+    readonly layers: TileLayer[] = []
+
+    constructor(layers: TileLayer[]) {
+        for (const layer of layers) {
+            this.#addLayer(layer)
+        }
+    }
+    
+    readonly #addLayer = (layer: TileLayer): void => {
+        this.layers.push({
+            id: layer.id,
+            name: layer.name,
+            visible: layer.visible,
+            opacity: layer.opacity,
+            data: layer.data
+        })
+    }
+
     readonly #drawTile = (data: {
         renderer: MapRenderer
         helper: LevelHelper
-        tileSet: AggregateTileSet
+        tileSet: TileSet,
         gid: number
         x: number
         y: number
@@ -32,7 +49,7 @@ class LiveTileMap extends TileMap {
     drawTileMap = (data: {
         renderer: MapRenderer
         helper: LevelHelper
-        tileSet: AggregateTileSet
+        tileSet: TileSet,
         isDebug: boolean
     }): void => {
         const viewport = data.renderer.getCurrentViewport()

@@ -3,7 +3,7 @@ import Directions from '../abstract/Directions.static'
 class Touchscreen {
     readonly #touches: object
 
-    constructor(element: HTMLElement) {
+    constructor(element: HTMLCanvasElement) {
         this.#touches = {}
         this.#initDirections()
         this.#registerTouchStartEvents(element)
@@ -11,7 +11,7 @@ class Touchscreen {
         this.#registerTouchMoveEvents(element)
     }
 
-    #initDirections = (): void => {
+    readonly #initDirections = (): void => {
         for (const direction in Directions) {
             this.#touches[Directions[direction].label] = {
                 active: false,
@@ -19,7 +19,7 @@ class Touchscreen {
         }
     }
 
-    #setRelativeDirections = (element: HTMLElement, xPix: number, yPix: number): void => {
+    readonly #setRelativeDirections = (element: HTMLCanvasElement, xPix: number, yPix: number): void => {
         if (xPix > element.width * 0.75) {
             this.#touches[Directions.RIGHT.label].active = true
         }
@@ -34,8 +34,8 @@ class Touchscreen {
         }
     }
 
-    #registerTouchStartEvents = (element: HTMLElement): void => {
-        window.addEventListener('touchstart', (e) => {
+    readonly #registerTouchStartEvents = (element: HTMLCanvasElement): void => {
+        element.addEventListener('touchstart', (e) => {
             e.preventDefault()
             if (e.target === element) {
                 this.#initDirections()
@@ -45,15 +45,15 @@ class Touchscreen {
         })
     }
 
-    #registerTouchEndEvents = (): void => {
-        window.addEventListener('touchend', (e) => {
+    readonly #registerTouchEndEvents = (element: HTMLCanvasElement): void => {
+        element.addEventListener('touchend', (e) => {
             e.preventDefault()
             this.#initDirections()
         })
     }
 
-    #registerTouchMoveEvents = (element: HTMLElement): void => {
-        window.addEventListener('touchmove', (e) => {
+    readonly #registerTouchMoveEvents = (element: HTMLCanvasElement): void => {
+        element.addEventListener('touchmove', (e) => {
             e.preventDefault()
             if (e.target === element) {
                 this.#initDirections()

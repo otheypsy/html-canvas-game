@@ -1,9 +1,9 @@
 import type GameCanvas from './GameCanvas.class'
 import type GameConfig from '../game/GameConfig.class'
 import type { DrawImage } from '../types/DrawImage.type'
-import Camera from './Camera.class'
-import { RectCoordinates } from '../types/RectCoordinates.type'
-import LevelHelper from '../level/LevelHelper.class'
+
+import type Camera from './Camera.class'
+import type { RectCoordinates } from '../types/RectCoordinates.type'
 
 interface MapRendererConstructor {
     config: GameConfig
@@ -40,6 +40,10 @@ class MapRenderer {
     }
 
     globalTranslate = (): void => {
+        /*
+        this.#canvas.element.style.transformOrigin = "0 0";
+        this.#canvas.element.style.transform = `scale(${this.#config.scale})`
+        */
         this.#canvas.context.translate(this.#canvas.center.xPix, this.#canvas.center.yPix)
         this.setScale(this.#config.scale)
 
@@ -51,10 +55,10 @@ class MapRenderer {
 
     getCurrentViewport = (): RectCoordinates => {
         const mapOffset = this.#camera.getMapOffset()
-        const xPix0 = mapOffset.xPix - this.#canvas.element.width / (2 * this.#config.scale)
-        const yPix0 = mapOffset.yPix - this.#canvas.element.height / (2 * this.#config.scale)
-        const xPix1 = mapOffset.xPix + this.#canvas.element.width / this.#config.scale
-        const yPix1 = mapOffset.yPix + this.#canvas.element.height / this.#config.scale
+        const xPix0 = mapOffset.xPix - this.#canvas.center.xPix / this.#config.scale
+        const yPix0 = mapOffset.yPix - this.#canvas.center.yPix / this.#config.scale
+        const xPix1 = mapOffset.xPix + this.#canvas.center.xPix / this.#config.scale
+        const yPix1 = mapOffset.yPix + this.#canvas.center.yPix / this.#config.scale
         return {
             xPix0,
             yPix0,
@@ -63,24 +67,30 @@ class MapRenderer {
         }
     }
 
-    drawDebugGrid = (data: object): void => {
+    drawDebugGrid = (data: {
+        dx: number
+        dy: number
+        dw: number
+        dh: number
+    }): void => {
         this.#canvas.context.beginPath()
         this.#canvas.context.strokeStyle = '#f00' // some color/style
-        this.#canvas.context.lineWidth = 2 / this.#config.scale
+        this.#canvas.context.lineWidth = 1
         this.#canvas.context.strokeRect(data.dx, data.dy, data.dw, data.dh)
     }
 
     drawImage = (data: DrawImage, isDebug: boolean = false): void => {
+
         this.#canvas.context.drawImage(
             data.img, 
-            Math.floor(data.sx), 
-            Math.floor(data.sy),
-            Math.ceil(data.sw),
-            Math.ceil(data.sh),
-            Math.floor(data.dx),
-            Math.floor(data.dy),
-            Math.ceil(data.dw),
-            Math.ceil(data.dh)
+            data.sx, 
+            data.sy,
+            data.sw,
+            data.sh,
+            data.dx,
+            data.dy,
+            data.dw,
+            data.dh
         )
         if (isDebug) this.drawDebugGrid(data)
     }

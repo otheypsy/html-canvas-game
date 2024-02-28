@@ -1,20 +1,25 @@
-class TileMap {
-    readonly layers = []
+import type { TileLayer } from "../types/TileLayer.type"
 
-    constructor(tileMap: object) {
-        for (const layer of tileMap.layers) {
-            this.addLayer(layer)
+class TileMap {
+    readonly layers: TileLayer[] = []
+
+    constructor(layers: TileLayer[]) {
+        for (const layer of layers) {
+            this.#addLayer(layer)
         }
     }
 
-    addLayer = (layer): void => {
+    readonly #addLayer = (layer: TileLayer): void => {
         this.layers.push({
             id: layer.id,
             name: layer.name,
             visible: layer.visible,
             opacity: layer.opacity,
-            data: layer.data,
+            data: layer.data
         })
     }
+
+    drawTileMap = (data: unknown): void => {}
+
 }
 export default TileMap

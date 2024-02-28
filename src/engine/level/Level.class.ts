@@ -1,21 +1,19 @@
-import type { PixelConfig } from '../types/PixelConfig.type'
 import type MapRenderer from '../graphics/MapRenderer.class'
-import type AggregateTileSet from '../tilesets/AggregateTileSet.class'
-import type { TileConfig } from '../types/TileConfig.type'
-import LevelHelper from './LevelHelper.class'
-import TileMap from './TileMap.class'
-import OffscreenTileMap from './OffscreenTileMap.class'
-import LiveTileMap from './LiveTileMap.class'
+
+import type LevelHelper from './LevelHelper.class'
+import type LiveTileMap from './LiveTileMap.class'
+import type OffscreenTileMap from './OffscreenTileMap.class'
+import type { TileSet } from '../types/TileSet.type'
 
 interface LevelConstructor {
-    tileMaps: Map<string, LiveTileMap | OffscreenTileMap>
-    tileSet: AggregateTileSet
+    tileMaps: Record<string, LiveTileMap | OffscreenTileMap>
+    tileSet: TileSet
     helper: LevelHelper
 }
 
 class Level {
-    readonly #tileMaps: Map<string, LiveTileMap | OffscreenTileMap>
-    readonly #tileSet: AggregateTileSet
+    readonly #tileMaps: Record<string, LiveTileMap | OffscreenTileMap>
+    readonly #tileSet: TileSet
     readonly helper: LevelHelper
 
     constructor(level: LevelConstructor) {
@@ -25,16 +23,15 @@ class Level {
     }
 
     getTileMap = (zIndex: string): LiveTileMap | OffscreenTileMap | undefined => {
-        return this.#tileMaps.get(zIndex)
+        return this.#tileMaps[zIndex]
     }
 
-    getTileSet = (): AggregateTileSet => {
+    getTileSet = (): TileSet => {
         return this.#tileSet
     }
 
     drawTileMap = (renderer: MapRenderer, zIndex:string, isDebug: boolean = false): void => {
-        if(!this.#tileMaps.has(zIndex)) return
-        this.#tileMaps.get(zIndex)?.drawTileMap({
+        this.#tileMaps[zIndex]?.drawTileMap({
             renderer,
             helper: this.helper,
             tileSet: this.#tileSet,

@@ -1,20 +1,19 @@
-import type Renderer from '../graphics/MapRenderer.class'
-import GameConfig from '../game/GameConfig.class'
-import BaseRenderer from '../graphics/BaseRenderer.class'
+import type GameConfig from '../game/GameConfig.class'
+import type BaseRenderer from '../graphics/BaseRenderer.class'
 
 const style = {
-    text: new Map([
-        ['font', '1.2rem Courier New'],
-        ['textAlign', 'center'],
-        ['textBaseline', 'top'],
-        ['strokeStyle', '#6c757d'],
-        ['fillStyle', '#6c757d'],
-    ]),
-    bubble: new Map([
-        ['strokeStyle', '#6c757d'],
-        ['fillStyle', 'white'],
-        ['lineWidth', 3],
-    ]),
+    text: {
+        'font': '1.2rem Courier New',
+        'textAlign': 'center',
+        'textBaseline': 'top',
+        'strokeStyle': '#6c757d',
+        'fillStyle': '#6c757d',
+    },
+    bubble: {
+        'strokeStyle': '#6c757d',
+        'fillStyle': 'white',
+        'lineWidth': 3,
+    },
 }
 class SpeechBubble {
     readonly #config: GameConfig

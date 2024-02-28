@@ -1,32 +1,45 @@
-import TileMap from './TileMap.class'
 import GameOffscreenCanvas from '../graphics/GameOffscreenCanvas.class'
+import OffscreenRenderer from '../graphics/OffScreenRenderer.class'
 
-import type OffscreenRenderer from '../graphics/OffScreenRenderer.class'
 import type MapRenderer from '../graphics/MapRenderer.class'
 import type LevelHelper from './LevelHelper.class'
-import type AggregateTileSet from '../tilesets/AggregateTileSet.class'
+import type { TileLayer } from '../types/TileLayer.type'
+import type { TileSet } from '../types/TileSet.type'
 
-class OffscreenTileMap extends TileMap {
+class OffscreenTileMap {
     readonly #offscreenCanvas: GameOffscreenCanvas
+    readonly layers: TileLayer[] = []
 
     constructor(
-        renderer: OffscreenRenderer,
         helper: LevelHelper,
-        tileSet: AggregateTileSet,
-        tileMap: object,
+        tileSet: TileSet,
+        layers: TileLayer[],
         isDebug?: boolean,
     ) {
-        super(tileMap)
+        for (const layer of layers) {
+            this.#addLayer(layer)
+        }
+        const renderer = new OffscreenRenderer()
         const width = helper.tileConfig.xMax * helper.pixelConfig.xPixUnit
         const height = (helper.tileConfig.count / helper.tileConfig.xMax) * helper.pixelConfig.yPixUnit
         this.#offscreenCanvas = new GameOffscreenCanvas(width, height)
         this.#initializeCanvasImage(renderer, helper, tileSet, isDebug ?? false)
     }
 
+    readonly #addLayer = (layer: TileLayer): void => {
+        this.layers.push({
+            id: layer.id,
+            name: layer.name,
+            visible: layer.visible,
+            opacity: layer.opacity,
+            data: layer.data
+        })
+    }
+
     readonly #drawTile = (data: {
         renderer: OffscreenRenderer
         helper: LevelHelper
-        tileSet: AggregateTileSet
+        tileSet: TileSet,
         gid: number
         x: number
         y: number
@@ -50,29 +63,31 @@ class OffscreenTileMap extends TileMap {
     readonly #initializeCanvasImage = (
         renderer: OffscreenRenderer,
         helper: LevelHelper,
-        tileSet: AggregateTileSet,
+        tileSet: TileSet,
         isDebug: boolean = false,
     ): void => {
         for (const layer of this.layers) {
             this.#offscreenCanvas.context.save()
             this.#offscreenCanvas.context.globalAlpha = layer.opacity
-            for (const index in layer.data) {
+            layer.data.forEach((gid: number, index: number) => {
                 const { x, y } = helper.indexToTile(index)
                 this.#drawTile({
                     renderer,
                     helper,
                     tileSet,
-                    gid: layer.data[index],
+                    gid,
                     x,
                     y,
                     isDebug,
                 })
-            }
+            })
             this.#offscreenCanvas.context.restore()
         }
     }
 
-    drawTileMap = (data: { renderer: MapRenderer}): void => {
+    drawTileMap = (data: { 
+        renderer: MapRenderer 
+    }): void => {
         const viewport = data.renderer.getCurrentViewport()
         const xPix0 = Math.max(0, viewport.xPix0)
         const yPix0 = Math.max(0, viewport.yPix0)

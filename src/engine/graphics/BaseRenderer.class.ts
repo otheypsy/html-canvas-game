@@ -1,7 +1,5 @@
 import type GameCanvas from './GameCanvas.class'
 import type GameConfig from '../game/GameConfig.class'
-import type { DrawImage } from '../types/DrawImage.type'
-import Camera from './Camera.class'
 
 interface BaseRendererConstructor {
     config: GameConfig
@@ -9,11 +7,9 @@ interface BaseRendererConstructor {
 }
 
 class BaseRenderer {
-    readonly #config: GameConfig
     readonly #canvas: GameCanvas
 
     constructor(data: BaseRendererConstructor) {
-        this.#config = data.config
         this.#canvas = data.canvas
     }
 
@@ -29,9 +25,9 @@ class BaseRenderer {
         this.#canvas.context.scale(scale, scale)
     }
 
-    configureStyle = (data: Map<string, number | string>): void => {
-        for (const [key, value] of data) {
-            this.#canvas.context[key] = value
+    configureStyle = (data: Record<string, number | string>): void => {
+        for(const key of Object.keys(data)) {
+            this.#canvas.context[key] = data[key]
         }
     }
 

@@ -3,11 +3,7 @@ import AggregateTileSet from '../../engine/tilesets/AggregateTileSet.class'
 import LiveTileMap from '../../engine/level/LiveTileMap.class'
 import LevelHelper from '../../engine/level/LevelHelper.class'
 import TileSetFactory from './TileSet.factory'
-
-import type { TilePosition } from '../../engine/types/TilePosition.type'
 import OffscreenTileMap from '../../engine/level/OffscreenTileMap.class'
-import TileMap from '../../engine/level/TileMap.class'
-import OffscreenRenderer from '../../engine/graphics/OffScreenRenderer.class'
 
 export interface CreateLevel {
     gameName: string
@@ -17,29 +13,30 @@ export interface CreateLevel {
     yPixUnit: number
     layers: object[]
     tilesets: object[]
+    isLive?: boolean
 }
 
-const handleLayer = (tileMaps: Map<number, OffscreenTileMap>, layer: object): void => {
+const handleLayer = (finalLayers: Record<number, object>, layer: object): void => {
     const zIndex = layer?.properties?.find(property => property.name === 'zIndex').value ?? -1
-    if (!Object.hasOwn(tileMaps, zIndex)) {
-        tileMaps[zIndex] = {
+    if (!Object.hasOwn(finalLayers, zIndex)) {
+        finalLayers[zIndex] = {
             zIndex,
             layers: [layer],
         }
     } else {
-        tileMaps[zIndex].layers.push(layer)
+        finalLayers[zIndex].layers.push(layer)
     }
 }
 
-const handleLayers = (tileMaps: object, layers: object[]): object => {
+const handleLayers = (finalLayers: Record<number, object>, layers: object[]): object => {
     for (const layer of layers) {
         switch (layer.type) {
             case 'group': {
-                handleLayers(tileMaps, layer.layers)
+                handleLayers(finalLayers, layer.layers)
                 break
             }
             case 'tilelayer': {
-                handleLayer(tileMaps, layer)
+                handleLayer(finalLayers, layer)
                 break
             }
             default: {
@@ -47,7 +44,12 @@ const handleLayers = (tileMaps: object, layers: object[]): object => {
             }
         }
     }
-    return tileMaps
+    return finalLayers
+}
+
+const sanitizeLayers = (layers: object[]): object => {
+    const finalLayers: Record<number, object> = {}
+    return handleLayers(finalLayers, layers)
 }
 
 const handleTileSets = async (gameName:string, tileSetAggregate: AggregateTileSet, tileSets: object[]): Promise<void> => {
@@ -82,11 +84,13 @@ const create = async (level: CreateLevel): Promise<Level> => {
     const tileSet = new AggregateTileSet()
     await handleTileSets(level.gameName, tileSet, level.tilesets)
 
-    const layers = handleLayers({}, level.layers)
-    const offScreenRenderer = new OffscreenRenderer()
-    const tileMaps = new Map()
+    const layers = sanitizeLayers(level.layers)
+    const tileMaps: Record<string, LiveTileMap | OffscreenTileMap> = {}
     for(const zIndex in layers) {
-        tileMaps.set(zIndex, new OffscreenTileMap(offScreenRenderer, helper, tileSet, layers[zIndex]))
+        const tileMap = (level?.isLive === true)
+            ? new LiveTileMap(layers[zIndex].layers)
+            : new OffscreenTileMap(helper, tileSet, layers[zIndex].layers)  
+        tileMaps[zIndex] = tileMap
     }
 
     return new Level({

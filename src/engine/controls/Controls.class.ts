@@ -1,5 +1,5 @@
 import type Keyboard from './Keyboard.class'
-import Touchscreen from './Touchscreen.class'
+import type Touchscreen from './Touchscreen.class'
 
 type InputType = 'keyboard' | 'touchscreen'
 
@@ -20,7 +20,7 @@ class Controls {
         this.#touchscreen = touchscreen
     }
 
-    #checkKeyboard = (observer: InputObserver): void => {
+    readonly #checkKeyboard = (observer: InputObserver): void => {
         for (const input of observer.inputs) {
             if (this.#keyboard?.keys[input]?.pressed === true) {
                 observer.callback(input, 'keyboard')
@@ -28,7 +28,7 @@ class Controls {
         }
     }
 
-    #checkTouchscreen = (observer: InputObserver): void => {
+    readonly #checkTouchscreen = (observer: InputObserver): void => {
         for (const input of observer.inputs) {
             if (this.#touchscreen?.touches[input]?.active === true) {
                 observer.callback(input, 'touchscreen')

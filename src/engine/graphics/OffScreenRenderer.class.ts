@@ -2,7 +2,15 @@ import type { DrawImage } from '../types/DrawImage.type'
 import type GameOffscreenCanvas from './GameOffscreenCanvas.class'
 
 class OffscreenRenderer {
-    drawDebugGrid = (canvas: GameOffscreenCanvas, data: object): void => {
+    drawDebugGrid = (
+        canvas: GameOffscreenCanvas,
+        data: {
+            dx: number
+            dy: number
+            dw: number
+            dh: number
+        }
+    ): void => {
         canvas.context.beginPath()
         canvas.context.strokeStyle = '#f00'
         canvas.context.lineWidth = 1

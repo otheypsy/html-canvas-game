@@ -1,5 +1,5 @@
 class Keyboard {
-    readonly #keys: object
+    readonly #keys: Record<string, { pressed: boolean }>
 
     constructor(keys: string[]) {
         this.#keys = {}
@@ -8,7 +8,7 @@ class Keyboard {
         this.#registerKeyUpEvents()
     }
 
-    #initKeys = (keys): void => {
+    readonly #initKeys = (keys: string[]): void => {
         for (const key of keys) {
             this.#keys[key] = {
                 pressed: false,
@@ -16,13 +16,13 @@ class Keyboard {
         }
     }
 
-    #registerKeyDownEvents = (): void => {
+    readonly #registerKeyDownEvents = (): void => {
         window.addEventListener('keydown', (e) => {
             if (Object.prototype.hasOwnProperty.call(this.#keys, e.key)) this.#keys[e.key].pressed = true
         })
     }
 
-    #registerKeyUpEvents = (): void => {
+    readonly #registerKeyUpEvents = (): void => {
         window.addEventListener('keyup', (e) => {
             if (Object.prototype.hasOwnProperty.call(this.#keys, e.key)) this.#keys[e.key].pressed = false
         })

@@ -1,8 +1,9 @@
 import { Modal as BootstrapModal } from 'bootstrap'
-import AnimatedSpriteActor from '../engine/actors/AnimatedSpriteActor.class'
-import SpeechBubble from '../engine/classes/SpeechBubble.class'
-import { PixelPosition } from '../engine/types/PixelPosition'
-import BaseRenderer from '../engine/graphics/BaseRenderer.class'
+
+import type AnimatedSpriteActor from '../engine/actors/AnimatedSpriteActor.class'
+import type BaseRenderer from '../engine/graphics/BaseRenderer.class'
+import type SpeechBubble from '../engine/classes/SpeechBubble.class'
+import type { PixelPosition } from '../engine/types/PixelPosition'
 
 class NPC {
     readonly #speechBubble: SpeechBubble
@@ -25,14 +26,14 @@ class NPC {
 
     interact = (): void => {
         if (this.#isNearby && this.#modalType !== null) {
-            const element = document.getElementById('gameModal')
+            const element = document.getElementById('gameModal') as HTMLElement
             const modal = BootstrapModal.getOrCreateInstance(element)
             modal.show()
         }
     }
 
     updateIsNearby = (reference: PixelPosition, threshold: number = 50): void => {
-        const { xPix, yPix } = this.#actor.getMapPixPos()
+        const { xPix, yPix } = this.#actor.movable.getMapPixPos()
         this.#isNearby =
             xPix > reference.xPix - threshold &&
             xPix < reference.xPix + threshold &&
@@ -42,7 +43,7 @@ class NPC {
 
     drawSpeechBubble = (renderer: BaseRenderer): void => {
         if (this.#isNearby) {
-            const { xPix } = this.#actor.getMapPixPos()
+            const { xPix } = this.#actor.movable.getMapPixPos()
             const { yPix0 } = this.#actor.getRect()
             this.#speechBubble.drawUp(renderer, this.#dialogue, xPix, yPix0)
         }

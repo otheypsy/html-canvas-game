@@ -22,7 +22,7 @@ class LevelHelper {
         }
     }
 
-    getTileRect = (x, y): RectCoordinates => {
+    getTileRect = (x: number, y: number): RectCoordinates => {
         return {
             xPix0: x * this.pixelConfig.xPixUnit,
             yPix0: y * this.pixelConfig.yPixUnit,
@@ -31,23 +31,23 @@ class LevelHelper {
         }
     }
 
-    indexToTile = (index): TilePosition => {
+    indexToTile = (index: number): TilePosition => {
         const [y, x] = divMod(index, this.tileConfig.xMax)
         return { x, y }
     }
 
-    tileToIndex = (x, y): number => {
+    tileToIndex = (x: number, y: number): number => {
         return y * this.tileConfig.xMax + x
     }
 
-    tileToPix = (x, y): PixelPosition => {
+    tileToPix = (x: number, y: number): PixelPosition => {
         return {
             xPix: x * this.pixelConfig.xPixUnit + this.pixelConfig.xPixUnit / 2,
             yPix: y * this.pixelConfig.yPixUnit + this.pixelConfig.yPixUnit / 2,
         }
     }
 
-    pixToTile = (xPix, yPix): TilePosition => {
+    pixToTile = (xPix: number, yPix: number): TilePosition => {
         return {
             x: Math.floor(xPix / this.pixelConfig.xPixUnit),
             y: Math.floor(yPix / this.pixelConfig.yPixUnit),

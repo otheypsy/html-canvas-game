@@ -425,7 +425,7 @@
                  "height":50,
                  "id":50,
                  "name":"foreground",
-                 "opacity":0.5,
+                 "opacity":0.9,
                  "properties":[
                         {
                          "name":"zIndex",
@@ -685,7 +685,7 @@
                  "height":50,
                  "id":47,
                  "name":"foreground",
-                 "opacity":0.5,
+                 "opacity":0.9,
                  "properties":[
                         {
                          "name":"zIndex",
@@ -1016,7 +1016,7 @@
                  "height":50,
                  "id":45,
                  "name":"foreground",
-                 "opacity":0.5,
+                 "opacity":0.9,
                  "properties":[
                         {
                          "name":"zIndex",
@@ -1475,7 +1475,7 @@
                  "height":50,
                  "id":49,
                  "name":"foreground",
-                 "opacity":0.5,
+                 "opacity":0.9,
                  "properties":[
                         {
                          "name":"zIndex",
